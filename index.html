@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="es"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Portal CONVIFACG</title>
+<script src="app/config.js"></script>
+<style>
+:root{--tinta:#14213D;--fondo:#EEF1F5;--papel:#fff;--linea:#D5DBE5;--azul:#1a56db;--ok:#1e7e34;--mal:#b3261e}
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,Arial,sans-serif;background:var(--fondo);color:var(--tinta)}
+header{background:var(--tinta);color:#fff;padding:22px 16px}header div,main{max-width:900px;margin:0 auto}
+h1{margin:0;font-size:22px}header p{margin:4px 0 0;opacity:.8;font-size:14px}
+main{padding:16px}section{background:var(--papel);border:1px solid var(--linea);border-radius:10px;padding:16px;margin-bottom:16px}
+h2{margin:0 0 10px;font-size:17px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+.card{border:1px solid var(--linea);border-radius:8px;padding:12px}.card h3{margin:0 0 4px;font-size:15px}.card p{margin:0 0 10px;font-size:13px;color:#4a5568}
+a.btn,button{display:inline-block;padding:8px 12px;border:0;border-radius:6px;background:var(--azul);color:#fff;font-size:14px;cursor:pointer;text-decoration:none}
+button.sec{background:#5b6578}button.mal{background:var(--mal)}
+input[type=text],input[type=password],input[type=file]{width:100%;padding:8px;border:1px solid var(--linea);border-radius:6px;margin:4px 0 8px}
+ol{padding-left:20px;font-size:14px;line-height:1.5}table{width:100%;border-collapse:collapse;font-size:13px}td,th{padding:6px;border-bottom:1px solid var(--linea);text-align:left}
+#msg{margin-top:8px;font-size:13px;white-space:pre-wrap}.ok{color:var(--ok)}.err{color:var(--mal)}small{color:#5b6578}
+</style></head><body>
+<header><div><h1>Portal U.E. CONVIFACG</h1><p>Aplicaciones, extensión del SIE y archivos del proyecto</p></div></header>
+<main>
+<section><h2>Mis aplicaciones</h2>
+<div class="grid">
+ <div class="card"><h3>Registro escolar</h3><p>Notas, asistencia, kardex, boletines y centralizadores.</p><a class="btn" href="app/">Abrir la app</a></div>
+ <div class="card"><h3>Extensión «Importador SIE»</h3><p>Llena las notas en academico.sie.gob.bo desde el Excel del centralizador.</p><a class="btn" href="descargas/importador-calificaciones-sie_v3.2.zip" download>Descargar v3.2</a></div>
+</div></section>
+
+<section><h2>Instalar la extensión (Chrome o Edge)</h2>
+<ol><li>Descarga el .zip y descomprímelo en una carpeta fija.</li>
+<li>Abre <b>chrome://extensions</b> y activa <b>Modo desarrollador</b>.</li>
+<li>Pulsa <b>Cargar descomprimida</b> y elige la carpeta <i>importador</i>.</li>
+<li>Fija el icono con el puzzle 🧩 de la barra del navegador.</li></ol></section>
+
+<section><h2>Archivos del proyecto (Apps Script, zips, Excel)</h2>
+<small>Se guardan en tu Google Drive (carpeta «Portal CONVIFACG») mediante tu Apps Script. Es gratis y solo entra quien tenga la clave.</small>
+<label>URL de Apps Script (termina en /exec)</label><input type="text" id="url" placeholder="https://script.google.com/macros/s/.../exec">
+<label>Clave del portal</label><input type="password" id="clave" autocomplete="off">
+<button id="listar" class="sec">Ver archivos</button>
+<hr style="border:0;border-top:1px solid var(--linea);margin:12px 0">
+<input type="file" id="archivo" multiple><button id="subir">Subir archivo(s)</button>
+<div id="msg"></div>
+<table id="tabla" style="margin-top:10px"></table></section>
+</main>
+<script>
+const $=id=>document.getElementById(id);
+$('url').value=(window.CONFIG&&CONFIG.API_URL)||localStorage.getItem('API_URL')||'';
+function msg(t,ok){const m=$('msg');m.textContent=t;m.className=ok?'ok':'err'}
+function llamar(fn,args){
+  const url=$('url').value.trim(); if(!url) return Promise.reject(new Error('Pega la URL de Apps Script.'));
+  localStorage.setItem('API_URL',url);
+  return fetch(url,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({fn,args})})
+   .then(r=>r.json()).then(j=>{if(!j.ok)throw new Error(j.error);return j.data})}
+const tam=b=>b>1048576?(b/1048576).toFixed(1)+' MB':Math.max(1,Math.round(b/1024))+' KB';
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+async function listar(){
+  try{msg('Cargando…',true);const l=await llamar('portalListar',[$('clave').value]);
+   $('tabla').innerHTML='<tr><th>Archivo</th><th>Tamaño</th><th>Fecha</th><th></th></tr>'+(l.length?l.map(f=>`<tr><td>${esc(f.nombre)}</td><td>${tam(f.bytes)}</td><td>${new Date(f.fecha).toLocaleDateString()}</td><td><button class="sec" data-b="${f.id}">Descargar</button> <button class="mal" data-d="${f.id}" data-n="${esc(f.nombre)}">Borrar</button></td></tr>`).join(''):'<tr><td colspan=4>Aún no hay archivos.</td></tr>');
+   msg(l.length+' archivo(s).',true)}catch(e){msg(e.message)}}
+$('listar').onclick=listar;
+$('tabla').onclick=async e=>{
+  const b=e.target.dataset.b,d=e.target.dataset.d;
+  try{
+   if(b){msg('Descargando…',true);const r=await llamar('portalBajar',[$('clave').value,b]);
+     const by=Uint8Array.from(atob(r.base64),c=>c.charCodeAt(0));const a=document.createElement('a');
+     a.href=URL.createObjectURL(new Blob([by],{type:r.tipo}));a.download=r.nombre;a.click();msg('Descargado: '+r.nombre,true)}
+   if(d&&confirm('¿Borrar «'+e.target.dataset.n+'»? (va a la papelera de Drive)')){await llamar('portalBorrar',[$('clave').value,d]);listar()}
+  }catch(er){msg(er.message)}};
+function aB64(f){return new Promise((ok,no)=>{const r=new FileReader();r.onload=()=>ok(r.result.split(',')[1]);r.onerror=no;r.readAsDataURL(f)})}
+$('subir').onclick=async()=>{
+  const fs=[...$('archivo').files]; if(!fs.length)return msg('Elige al menos un archivo.');
+  try{for(const f of fs){
+    if(f.size>25*1048576)throw new Error(f.name+' pesa más de 25 MB.');
+    msg('Subiendo '+f.name+'…',true);await llamar('portalSubir',[$('clave').value,f.name,await aB64(f),f.type])}
+   $('archivo').value='';msg('Listo: '+fs.length+' archivo(s) subido(s).',true);listar()}catch(e){msg(e.message)}};
+</script></body></html>

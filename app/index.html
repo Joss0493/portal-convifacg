@@ -1,0 +1,3392 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<base target="_top">
+<script src="config.js"></script>
+<script src="conector.js"></script>
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Registro escolar CONVIFACG</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --tinta:#14213D; --fondo:#EEF1F5; --papel:#FFFFFF; --linea:#D5DBE5;
+    --ok:#1F7A5C; --mal:#B3402A; --marca:#F2C14E; --suave:#5B6678; --grupo:#E3E9F3;
+  }
+  *{box-sizing:border-box}
+  [hidden]{display:none!important}
+  html,body{margin:0;background:var(--fondo);color:var(--tinta);
+    font:16px/1.45 "Atkinson Hyperlegible",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+  header{background:var(--tinta);color:#fff;padding:14px 16px 12px}
+  .cab{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+  header h1{margin:0;font-size:1.1rem;font-weight:700}
+  header p{margin:2px 0 0;font-size:.85rem;opacity:.8}
+  .usr{display:flex;align-items:center;gap:6px;font-size:.85rem;flex-wrap:wrap;justify-content:flex-end}
+  .usr button{border:1px solid #fff;background:transparent;color:#fff;border-radius:6px;font:inherit;font-size:.8rem;padding:4px 10px;min-height:32px;cursor:pointer}
+  .curso{display:flex;gap:8px;margin-top:10px}
+  .curso select{flex:1}
+  nav{display:flex;background:var(--papel);border-bottom:1px solid var(--linea);position:sticky;top:0;z-index:5;overflow-x:auto}
+  nav button{flex:1;border:0;background:none;padding:12px 8px;font:inherit;font-weight:700;color:var(--suave);
+    border-bottom:3px solid transparent;cursor:pointer;white-space:nowrap}
+  nav button[aria-selected="true"]{color:var(--tinta);border-bottom-color:var(--marca)}
+  main{max-width:1100px;margin:0 auto;padding:14px 12px 90px}
+  section{display:none} section.on{display:block}
+  .barra{display:flex;flex-wrap:wrap;gap:8px;align-items:end;margin-bottom:12px}
+  label{display:flex;flex-direction:column;font-size:.8rem;color:var(--suave);gap:3px}
+  select,input,textarea,button.btn{font:inherit;color:var(--tinta);border:1px solid var(--linea);border-radius:6px;
+    padding:9px 10px;background:#fff;min-height:44px}
+  input[readonly]{background:#F1F3F7}
+  textarea{width:100%;min-height:120px}
+  :focus-visible{outline:3px solid var(--marca);outline-offset:1px}
+  button.btn{background:var(--tinta);color:#fff;border-color:var(--tinta);font-weight:700;cursor:pointer;padding:9px 16px}
+  button.btn.sec{background:#fff;color:var(--tinta)}
+  button.btn:disabled{opacity:.5}
+  .tabla{overflow:auto;background:var(--papel);border:1px solid var(--linea);border-radius:8px;max-height:75vh}
+  table{border-collapse:collapse;width:100%}
+  th,td{padding:6px 8px;text-align:center;border-bottom:1px solid var(--linea);white-space:nowrap}
+  th{font-size:.8rem;color:var(--suave);font-weight:700;background:#F7F8FA;position:sticky;top:0;z-index:2}
+  td.n,th.n{text-align:left;min-width:180px;position:sticky;left:0;background:#fff;z-index:1;border-right:1px solid var(--linea)}
+  th.n{background:#F7F8FA;z-index:3}
+  tr:last-child td{border-bottom:0}
+  td input{width:64px;text-align:center;padding:6px 4px;min-height:38px}
+  td input.exc{border-color:var(--mal);background:#FBECE8}
+  #tNotas thead tr:nth-child(2) th,#tTodas thead tr:nth-child(2) th{top:36px}
+  #tTodas th.grupo{text-align:center}
+  #tTodas td.sep,#tTodas th.sep{border-left:2px solid var(--tinta)}
+  .cen thead tr:nth-child(2) th{top:36px}
+  .cen td.sep,.cen th.sep{border-left:2px solid var(--tinta)}
+  .wa-card{border-left:4px solid var(--ok)}
+  .wa-card .barra{margin-bottom:0}
+  th.grupo{background:var(--grupo);color:var(--tinta);font-size:.95rem;border-left:2px solid var(--tinta)}
+  th.crit{font-weight:400;min-width:110px}
+  th.crit input{width:84px;padding:4px 6px;min-height:32px;font-size:.8rem}
+  button.mini{border:1px solid var(--tinta);background:#fff;color:var(--tinta);border-radius:6px;font:inherit;font-size:.8rem;
+    font-weight:700;padding:3px 8px;cursor:pointer;min-height:32px}
+  button.mini.x{border-color:var(--linea);color:var(--mal);padding:3px 7px}
+  td.prom{font-weight:700;background:#F3F6FB;min-width:56px;border-right:2px solid var(--tinta)}
+  th.extra{background:#FBF1D2;border-left:2px solid var(--tinta)}
+  td.celda-extra{background:#FFF9E6;border-left:2px solid var(--tinta)}
+  .tot{font-weight:700;font-size:1.05rem}
+  .rep{color:var(--mal)} .apr{color:var(--ok)}
+  .seg{display:inline-flex;border:1px solid var(--linea);border-radius:6px;overflow:hidden}
+  .seg button{border:0;background:#fff;min-width:44px;min-height:40px;font:inherit;font-weight:700;color:var(--suave);cursor:pointer;
+    border-right:1px solid var(--linea)}
+  .seg button:last-child{border-right:0}
+  .seg button.on[data-e="P"]{background:var(--ok);color:#fff}
+  .seg button.on[data-e="F"]{background:var(--mal);color:#fff}
+  .seg button.on[data-e="L"]{background:var(--marca);color:var(--tinta)}
+  .seg button.on[data-e="R"]{background:var(--suave);color:#fff}
+  .nota{font-size:.85rem;color:var(--suave);margin:6px 0 12px}
+  .tarjeta{background:var(--papel);border:1px solid var(--linea);border-radius:8px;padding:14px;margin-bottom:12px}
+  .general{font-size:2.2rem;font-weight:700;line-height:1}
+  .vacio{padding:28px 12px;text-align:center;color:var(--suave);white-space:normal}
+  #aviso{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);background:var(--tinta);color:#fff;
+    padding:10px 16px;border-radius:6px;display:none;max-width:90%;z-index:60}
+  #aviso.mal{background:var(--mal)}
+  .fila-est:last-child{border-bottom:0}
+  .envio{border-left:4px solid var(--marca)}
+  /* pantallas de acceso */
+  .pantalla{position:fixed;inset:0;background:var(--tinta);display:none;align-items:center;justify-content:center;padding:16px;z-index:50;overflow:auto}
+  .caja{background:#fff;border-radius:10px;padding:22px;width:100%;max-width:360px;display:flex;flex-direction:column;gap:12px}
+  .caja.ancha{max-width:460px}
+  .caja h2{margin:0;font-size:1.25rem}
+  .caja .msg{color:var(--mal);font-size:.9rem;min-height:1.2em;margin:0}
+  .caja input{width:100%}
+  .opc{flex-direction:row;align-items:flex-start;gap:10px;font-size:.95rem;color:var(--tinta);border:1px solid var(--linea);border-radius:6px;padding:10px;cursor:pointer}
+  .opc input{width:20px;height:20px;min-height:0;padding:0;margin-top:2px;flex:none}
+  .opc small{display:block;color:var(--suave);font-size:.8rem}
+  .pesos{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .areas-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:6px;margin:8px 0 12px}
+  .chk{flex-direction:row;align-items:center;gap:8px;font-size:.95rem;color:var(--tinta);border:1px solid var(--linea);border-radius:6px;padding:8px 10px;cursor:pointer}
+  .chk input{width:20px;height:20px;min-height:0;padding:0}
+  tr.sel td{background:#FFF9E6}
+  /* Reporte de asistencia por fechas */
+.tasis th,.tasis td{padding:3px 2px;font-size:.8rem}
+.tasis th.vert{height:70px;min-width:26px;vertical-align:bottom}
+.tasis th.vert span{writing-mode:vertical-rl;transform:rotate(180deg);white-space:nowrap;font-size:.75rem}
+.tasis td.ea{min-width:26px;font-weight:700}
+.tasis td.ea-P{background:#E2EFDA}.tasis td.ea-F{background:#F8CBAD;color:var(--mal)}
+.tasis td.ea-R{background:#FFE699}.tasis td.ea-L{background:#BDD7EE}
+.tasis td.sep,.tasis th.sep{border-left:2px solid var(--tinta)}
+@media print{#s-asis .tabla,#s-asis .tarjeta{box-shadow:none} .tasis th.vert{height:60px}}
+  /* ===== MEJORAS VISUALES ===== */
+  :root{
+    --tinta2:#22345F; --sombra:0 1px 2px rgba(20,33,61,.06),0 4px 14px rgba(20,33,61,.07);
+    --sombra-g:0 10px 40px rgba(20,33,61,.28); --radio:12px;
+  }
+  html{scroll-behavior:smooth}
+  body{background:linear-gradient(180deg,#E9EEF6 0,#F4F6FA 280px,#F4F6FA 100%) fixed;-webkit-font-smoothing:antialiased}
+  @keyframes aparece{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  @keyframes entra{from{opacity:0;transform:translateY(16px) scale(.97)}to{opacity:1;transform:none}}
+  @keyframes giro{to{transform:rotate(360deg)}}
+
+  /* Acceso */
+  .pantalla{background:radial-gradient(1000px 520px at 15% -10%,#2E4A8A 0,transparent 60%),
+    radial-gradient(800px 480px at 100% 110%,#3B2F6B 0,transparent 55%),linear-gradient(160deg,#0F1A33,#14213D 55%,#1B2C54)}
+  .pantalla .caja{border-radius:18px;box-shadow:var(--sombra-g);animation:entra .45s ease both}
+  .login-caja{max-width:380px;padding:30px 26px 26px;gap:14px;border-top:5px solid var(--marca)}
+  .logo{width:60px;height:60px;border-radius:16px;margin:-6px auto 0;display:grid;place-items:center;
+    background:linear-gradient(135deg,var(--tinta),var(--tinta2));color:var(--marca);box-shadow:0 6px 16px rgba(20,33,61,.3)}
+  .lg-tit{text-align:center}
+  .lg-tit h2{font-size:1.45rem;letter-spacing:-.2px}
+  .lg-tit p{margin:4px 0 0;color:var(--suave);font-size:.92rem}
+  .caja label{font-weight:700;color:var(--tinta);font-size:.82rem}
+  .caja input{border-radius:10px;background:#F7F9FC;transition:border-color .15s,box-shadow .15s,background .15s}
+  .caja input:focus{background:#fff;border-color:var(--tinta);box-shadow:0 0 0 3px rgba(242,193,78,.45);outline:none}
+  .clave-wrap{position:relative;display:block}
+  .clave-wrap input{padding-right:78px}
+  .ojo{position:absolute;right:6px;top:50%;transform:translateY(-50%);border:0;background:transparent;color:var(--suave);
+    font:inherit;font-size:.8rem;font-weight:700;padding:6px 10px;border-radius:8px;cursor:pointer}
+  .ojo:hover{background:#E9EDF4;color:var(--tinta)}
+  .caja .msg:not(:empty){background:#FBECE8;border:1px solid #F0C9BF;border-radius:8px;padding:8px 10px}
+  .login-caja .btn{min-height:48px;font-size:1.02rem}
+
+  /* Botones y controles */
+  button.btn,.mini,.usr button,.seg button,nav button{transition:background .15s,color .15s,transform .1s,box-shadow .15s,border-color .15s}
+  button.btn{border-radius:10px;box-shadow:0 1px 2px rgba(20,33,61,.15)}
+  button.btn:hover:not(:disabled){background:var(--tinta2);box-shadow:0 4px 12px rgba(20,33,61,.22)}
+  button.btn:active:not(:disabled){transform:translateY(1px)}
+  button.btn.sec{box-shadow:none;border-color:#C3CBD9}
+  button.btn.sec:hover:not(:disabled){background:#EEF2F9;color:var(--tinta)}
+  button.btn:disabled{cursor:not-allowed}
+  button.btn:disabled::after{content:"";display:inline-block;width:12px;height:12px;margin-left:8px;vertical-align:-1px;
+    border:2px solid currentColor;border-right-color:transparent;border-radius:50%;animation:giro .7s linear infinite}
+  select,input,textarea{border-radius:10px;transition:border-color .15s,box-shadow .15s}
+  select:hover,input:hover,textarea:hover{border-color:#9FAAC0}
+  select:focus,input:focus,textarea:focus{border-color:var(--tinta)}
+  .mini{border-radius:8px}
+  .mini:hover{background:var(--tinta);color:#fff}
+  .mini.x:hover{background:var(--mal);border-color:var(--mal);color:#fff}
+
+  /* Encabezado */
+  header{background:linear-gradient(135deg,#0F1A33 0,var(--tinta) 45%,var(--tinta2) 100%);padding:16px 18px 16px;
+    box-shadow:0 2px 14px rgba(20,33,61,.25);position:relative}
+  header::after{content:"";position:absolute;left:0;right:0;bottom:0;height:3px;background:linear-gradient(90deg,var(--marca),#F7DC8B 50%,transparent)}
+  header h1{font-size:1.2rem;letter-spacing:-.2px;display:flex;align-items:center;gap:10px}
+  header h1::before{content:"";flex:none;width:34px;height:34px;border-radius:10px;
+    background:rgba(242,193,78,.16) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23F2C14E' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M2 9l10-5 10 5-10 5L2 9z'/%3E%3Cpath d='M6 11.5V16c0 1.2 2.7 3 6 3s6-1.8 6-3v-4.5'/%3E%3Cpath d='M22 9v6'/%3E%3C/svg%3E") center/20px no-repeat;
+    border:1px solid rgba(242,193,78,.35)}
+  header p{margin:3px 0 0 44px;opacity:.75}
+  .usr{gap:8px}
+  #usrNombre{background:rgba(255,255,255,.12);border-radius:999px;padding:5px 12px;font-weight:700}
+  .usr button{border-color:rgba(255,255,255,.45);border-radius:999px;padding:4px 14px}
+  .usr button:hover{background:#fff;color:var(--tinta)}
+  .curso select{background-color:rgba(255,255,255,.97);border:0;font-weight:700;box-shadow:0 2px 8px rgba(0,0,0,.15)}
+
+  /* Pestañas */
+  nav{background:rgba(255,255,255,.92);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-bottom:1px solid var(--linea);
+    box-shadow:0 2px 8px rgba(20,33,61,.06);padding:0 6px;scrollbar-width:none}
+  nav::-webkit-scrollbar{display:none}
+  nav button{flex:none;padding:13px 16px;border-bottom-width:3px;border-radius:8px 8px 0 0}
+  nav button:hover{color:var(--tinta);background:#F1F4FA}
+  nav button[aria-selected="true"]{background:linear-gradient(180deg,transparent,rgba(242,193,78,.14))}
+
+  /* Contenido */
+  main{padding-top:18px}
+  section.on{animation:aparece .3s ease both}
+  .tarjeta{border-radius:var(--radio);box-shadow:var(--sombra);border-color:#E1E6EF;padding:16px 18px}
+  .tarjeta>strong:first-child{font-size:1.02rem}
+  .tabla{border-radius:var(--radio);box-shadow:var(--sombra);border-color:#E1E6EF}
+  th{letter-spacing:.2px;text-transform:none}
+  tbody tr{transition:background .12s}
+  tbody tr:hover td:not(.prom):not(.celda-extra){background:#F6F9FE}
+  tbody tr:hover td.n{background:#F6F9FE}
+  td input{border-radius:8px;background:#FAFBFD}
+  td input:focus{background:#fff}
+  .tot{font-variant-numeric:tabular-nums}
+  td.tot.apr,td.tot.rep{font-weight:700}
+  .seg{border-radius:10px;box-shadow:0 1px 2px rgba(20,33,61,.06)}
+  .seg button:hover:not(.on){background:#EEF2F9}
+  .general{font-size:2.6rem;letter-spacing:-1px}
+  .vacio{padding:36px 14px;font-size:.95rem}
+  .nota{line-height:1.5}
+  .wa-card{border-left-width:5px}
+  .envio{border-left-width:5px}
+  .fila-est{padding:10px 4px;border-radius:8px}
+  .fila-est:hover{background:#F6F9FE}
+  .chk,.opc{border-radius:10px;background:#FAFBFD;transition:background .15s,border-color .15s}
+  .chk:hover,.opc:hover{background:#F1F5FC;border-color:#9FAAC0}
+  .chk:has(input:checked),.opc:has(input:checked){background:#FFF7DD;border-color:var(--marca)}
+  .pesos input{width:100%}
+
+  /* Aviso (toast) */
+  #aviso{border-radius:12px;padding:12px 20px;box-shadow:var(--sombra-g);font-weight:700;
+    border-left:5px solid var(--marca);animation:aparece .25s ease both}
+  #aviso.mal{border-left-color:#fff}
+
+  /* Barras de desplazamiento */
+  .tabla::-webkit-scrollbar{height:10px;width:10px}
+  .tabla::-webkit-scrollbar-thumb{background:#C3CBD9;border-radius:10px;border:2px solid #fff}
+  .tabla::-webkit-scrollbar-thumb:hover{background:#9FAAC0}
+
+  /* ===== PANTALLA DE NOTAS MÁS AMPLIA ===== */
+  main:has(#s-notas.on){max-width:none;padding-left:clamp(8px,2vw,28px);padding-right:clamp(8px,2vw,28px)}
+  #s-notas .barra{gap:12px;padding:12px 14px;background:var(--papel);border:1px solid #E1E6EF;border-radius:var(--radio);box-shadow:var(--sombra);align-items:flex-end}
+  #s-notas .barra label{min-width:150px}
+  #s-notas .barra select{min-width:170px}
+  #s-notas .barra .btn:last-child{margin-left:auto}
+  #s-notas .nota{margin:2px 4px 10px}
+  #s-notas .tabla{max-height:calc(100vh - 250px);min-height:380px}
+  #tNotas td{padding:9px 10px}
+  #tNotas th{padding:8px 10px}
+  #tNotas td.n,#tNotas th.n{min-width:260px;font-size:1rem}
+  #tNotas td input{width:84px;min-height:44px;font-size:1.05rem;padding:8px 6px}
+  #tNotas td.tot{font-size:1.1rem;min-width:70px}
+  #tNotas th{font-size:.88rem}
+  #tNotas tbody tr:nth-child(even) td:not(.n){background:#FAFBFD}
+
+  @media (max-width:600px){
+    #s-notas .barra{padding:10px}
+    #s-notas .barra label{min-width:0;flex:1 1 140px}
+    #s-notas .barra .btn:last-child{margin-left:0;flex:1 1 100%}
+    #s-notas .tabla{max-height:calc(100vh - 300px)}
+    #tNotas td.n,#tNotas th.n{min-width:170px}
+    #tNotas td input{width:72px}
+    header{padding:12px 14px}
+    header h1{font-size:1.05rem}
+    header h1::before{width:30px;height:30px}
+    header p{margin-left:40px}
+    nav button{padding:12px 12px;font-size:.92rem}
+    main{padding:12px 8px 90px}
+    .tarjeta{padding:14px}
+  }
+  @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+  .glo th{font-size:.78rem} .glo td{padding:4px 6px}
+  .glo th.n{position:sticky;left:0;z-index:4}
+  .glo td.n{font-size:.85rem}
+  @media print{header,nav,.barra,#aviso,.noprint{display:none!important} main{padding:0} body{background:#fff}}
+  /* ===== MÓVIL ===== */
+html{-webkit-text-size-adjust:100%}
+body{overflow-x:hidden}
+.tabla{-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain}
+.menu-m{display:none}
+td.n,th.n{min-width:120px;max-width:160px;white-space:normal}
+
+@media (max-width:760px){
+  header{padding:10px 12px}
+  .cab{flex-direction:column;gap:8px}
+  header p{display:none}
+  .usr{width:100%;justify-content:space-between;flex-wrap:nowrap}
+  #usrNombre{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-align:center}
+  .usr button{min-height:38px;flex:none}
+  .curso{margin-top:8px}
+  main{padding:10px 8px calc(90px + env(safe-area-inset-bottom))}
+  .tarjeta{padding:12px}
+
+  /* menú */
+  #navbox{position:sticky;top:0;z-index:20;background:#fff;box-shadow:0 2px 8px rgba(20,33,61,.12)}
+  .menu-m{display:flex;width:100%;justify-content:space-between;align-items:center;min-height:50px;padding:0 16px;
+    border:0;border-bottom:1px solid var(--linea);background:#fff;font:inherit;font-weight:700;color:var(--tinta);cursor:pointer}
+  .menu-m b{color:var(--ok);font-weight:700}
+  nav{display:none;position:static;overflow:visible;padding:8px;gap:6px;max-height:65dvh;overflow-y:auto;
+    box-shadow:none;backdrop-filter:none;-webkit-backdrop-filter:none}
+  #navbox.abierto nav{display:grid;grid-template-columns:1fr 1fr}
+  nav button{flex:none;border:1px solid var(--linea);border-radius:10px;padding:12px 8px;min-height:48px;white-space:normal}
+  nav button[aria-selected="true"]{background:#FFF7DD;border-color:var(--marca);color:var(--tinta)}
+
+  /* barras de controles */
+  .barra{gap:8px}
+  .barra>label{flex:1 1 calc(50% - 8px);min-width:0}
+
+  .barra>label select,.barra>label input{width:100%;min-width:0}
+  .barra>.btn,#s-notas .barra .btn:last-child{flex:1 1 100%;margin-left:0}
+  #s-notas .barra label{min-width:0;flex:1 1 calc(50% - 8px)}
+  #s-notas .barra select{min-width:0}
+  input,select,textarea{font-size:16px}
+  th.crit input{font-size:16px;width:96px}
+  .areas-grid{grid-template-columns:1fr}
+  .chk,.opc{min-height:48px}
+  .fila-est{flex-wrap:wrap}
+  .fila-est .btn{min-height:40px;padding:6px 12px}
+
+  /* notas */
+  #s-notas .tabla{max-height:72dvh;min-height:300px}
+  #tNotas td.n,#tNotas th.n{min-width:112px;max-width:112px;font-size:.82rem;line-height:1.2;padding:6px;
+    box-shadow:2px 0 4px rgba(20,33,61,.08)}
+  #tNotas td{padding:6px 4px}
+  #tNotas td input{width:58px;min-height:42px;font-size:16px;padding:4px 2px}
+  th.crit{min-width:100px}
+
+  /* asistencia */
+  .seg button{min-width:46px;min-height:44px}
+
+  /* ventanas */
+  .pantalla{align-items:flex-start;padding:12px;padding-top:max(12px,env(safe-area-inset-top))}
+  .caja{margin:auto 0;padding:18px}
+
+  /* aviso */
+  #aviso{width:calc(100% - 24px);text-align:center;bottom:calc(14px + env(safe-area-inset-bottom))}
+
+  /* Kardex y Usuarios como tarjetas */
+  #tKardex thead,#tUsu thead{display:none}
+  #tKardex,#tKardex tbody,#tKardex tr,#tKardex td,
+
+  #tUsu,#tUsu tbody,#tUsu tr,#tUsu td{display:block;width:100%}
+  #tKardex tr,#tUsu tr{padding:10px 12px;border-bottom:8px solid var(--fondo)}
+  #tKardex td,#tUsu td{border:0;padding:2px 0;text-align:left!important;white-space:normal!important;
+    min-width:0!important;max-width:none!important;position:static!important;background:transparent!important;box-shadow:none}
+  #tKardex td:empty,#tUsu td:empty{display:none}
+  #tKardex td.n,#tUsu td.n{font-weight:700;font-size:1.02rem}
+  #tKardex td::before,#tUsu td::before{color:var(--suave);font-size:.8rem;font-weight:400}
+  #tKardex td:nth-child(2)::before{content:"Fecha: "}
+  #tKardex td:nth-child(3)::before{content:"Tipo: "}
+  #tKardex td:nth-child(4)::before{content:"Materia: "}
+  #tKardex td:nth-child(5)::before{content:"Obs.: "}
+  #tKardex td:nth-child(6)::before{content:"Docente: "}
+  #tUsu td:nth-child(2)::before{content:"Nombre: "}
+  #tUsu td:nth-child(3)::before{content:"Rol: "}
+  #tUsu td:nth-child(4)::before{content:"Estado: "}
+  #tUsu td:nth-child(5)::before{content:"Áreas: "}
+  #tKardex td:last-child,#tUsu td:last-child{display:flex;gap:8px;justify-content:flex-end;padding-top:6px}
+  #tKardex td:last-child .mini,#tUsu td:last-child .mini{min-height:40px;padding:6px 14px}
+}
+@media print{#navbox{display:none!important}}
+
+/* ===== LIBRETA ESCOLAR: 2 por hoja carta ===== */
+#libretaImp{display:none}
+#libretaPdf{position:absolute;left:0;top:0;z-index:40;background:#fff}
+.pag-lib{width:816px;height:1050px;box-sizing:border-box;padding:24px 30px;background:#fff;overflow:hidden}
+.pag-lib .mitad{height:501px;box-sizing:border-box;overflow:hidden;position:relative}
+.pag-lib .mitad.m1{border-bottom:1px dashed #888;padding-bottom:5px}
+.pag-lib .mitad.m2{padding-top:7px}
+.lib{font-family:"Times New Roman",Times,serif;color:#000;font-size:7.5pt;line-height:1.15}
+.lib table{border-collapse:collapse;width:100%;table-layout:fixed}
+.lib th,.lib td{border:1px solid #000;padding:1px 4px;text-align:center;white-space:normal;background:#fff;position:static;color:#000;font-size:inherit;font-weight:400}
+.lib th{font-weight:700}
+.lib .lcab{display:flex;justify-content:space-between;gap:8px;margin-bottom:4px}
+.lib .lcab .izq{width:105px;text-align:center;font-size:6.5pt;padding-top:16px}
+.lib .lcab .lcen{flex:1}
+.lib .lcab h2{margin:0;font:700 13pt Arial,sans-serif;text-align:center}
+.lib .lcab h3{margin:1px 0 3px;font:700 9pt Arial,sans-serif;text-align:center}
+.lib .datos{display:grid;grid-template-columns:1.6fr 1fr;gap:0 10px;font-size:7.5pt}
+.lib .rango{font:6pt Arial,sans-serif;width:150px}
+.lib .rango td{padding:0 3px;text-align:left}
+.lib .est{display:flex;justify-content:space-between;gap:8px;border:1px solid #000;border-bottom:0;padding:3px 6px;font-size:7.5pt}
+.lib .tit{font-weight:700}
+.lib td.l{text-align:left}
+.lib td.num{font-size:8pt}
+.lib .firmas{display:flex;justify-content:space-between;margin:24px 20px 4px;font-weight:700;font-size:6.5pt;text-align:center}
+.lib .nota-pie{font-size:6pt}
+@media print{
+  body.imp-libreta{background:#fff}
+  body.imp-libreta #app,body.imp-libreta #aviso,body.imp-libreta #login,body.imp-libreta #cambio,body.imp-libreta #escala,body.imp-libreta #pdfOverlay,body.imp-libreta #libretaPdf{display:none!important}
+  body.imp-libreta #libretaImp{display:block}
+  #libretaImp .pag-lib{page-break-after:always;break-after:page}
+  #libretaImp .pag-lib:last-child{page-break-after:auto;break-after:auto}
+}
+/* ===== CORRECCIONES CELULAR ===== */
+html,body{max-width:100%;width:100%;overflow-x:clip}
+img,svg,canvas{max-width:100%;height:auto}
+main,header,#navbox,.tarjeta,.barra{max-width:100%}
+.tabla{max-width:100%;overflow:auto;-webkit-overflow-scrolling:touch}
+
+@media (max-width:760px){
+  /* tarjetas y barras nunca más anchas que la pantalla */
+  .tarjeta,.tabla{width:100%}
+  .barra>label{flex:1 1 calc(50% - 8px);min-width:0}
+  .barra>.btn,.barra>button{flex:1 1 100%}
+  .barra>label.chk{flex:1 1 100%}
+  textarea,input,select{max-width:100%}
+  input[type="date"]{width:100%;min-width:0;-webkit-appearance:none;appearance:none}
+
+  /* ventanas emergentes (login, cambio de clave, modo de calificación) */
+  .pantalla{padding:12px;align-items:flex-start}
+  .caja,.caja.ancha,.login-caja{max-width:100%;width:100%;margin:auto 0}
+  .pesos{grid-template-columns:1fr 1fr}
+
+  /* encabezado y menú */
+  header h1{font-size:1rem;line-height:1.2;min-width:0}
+  header h1::before{display:none}
+  .usr button{padding:4px 10px}
+
+  /* tablas de datos: nombre fijo angosto y el resto con desplazamiento lateral */
+  th,td{padding:5px 4px}
+  td.n,th.n{min-width:110px;max-width:130px;font-size:.82rem}
+  td input{width:56px}
+  .glo th,.glo td{font-size:.7rem}
+
+  /* planilla de asistencia por fechas */
+  .tasis td.n,.tasis th.n{min-width:120px;max-width:120px;font-size:.72rem}
+  .tasis th.vert{height:60px;min-width:24px}
+  .tasis td.ea{min-width:24px}
+
+  /* botones de asistencia P F L R que caben en una fila */
+  .seg button{min-width:40px;min-height:44px}
+  #tAsis td.n{max-width:110px}
+}
+
+@media (max-width:380px){
+  .barra>label{flex:1 1 100%}
+  .seg button{min-width:36px}
+  td input{width:50px}
+}
+.fila-est{display:flex;justify-content:space-between;align-items:center;gap:8px;border-bottom:1px solid var(--linea)}
+.fila-est .ctl{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.reg th,.reg td{padding:3px 4px;font-size:.8rem}
+.reg thead tr:nth-child(2) th{top:34px}
+.reg th.vert{height:96px;min-width:30px;vertical-align:bottom}
+.reg th.vert span{writing-mode:vertical-rl;transform:rotate(180deg);white-space:nowrap;font-size:.75rem}
+.reg td.n,.reg th.n{min-width:200px;max-width:240px}
+.reg .d-Ser{background:#A9D08E!important}.reg .d-Saber{background:#BDD7EE!important}
+.reg .d-Hacer{background:#FFD966!important}.reg .d-Autoeval{background:#D9D9D9!important}
+.reg td.pd{font-weight:700}
+.reg td.pd.d-Ser{background:#E4F1DA!important}.reg td.pd.d-Saber{background:#E3EEF8!important}
+.reg td.pd.d-Hacer{background:#FFF1C4!important}.reg td.pd.d-Autoeval{background:#EEE!important}
+.reg td.ex{background:#FFF9E6}
+.reg td.fin{font-weight:700;background:#EDEDED}
+.reg th.grupo.d-Ser,.reg th.vert.d-Ser{background:#A9D08E!important}
+.reg th.grupo.d-Saber,.reg th.vert.d-Saber{background:#BDD7EE!important}
+.reg th.grupo.d-Hacer,.reg th.vert.d-Hacer{background:#FFD966!important}
+.reg th.grupo.d-Autoeval,.reg th.vert.d-Autoeval{background:#D9D9D9!important}
+</style>
+</head>
+<body>
+
+<!-- ============ ACCESO ============ -->
+<div id="login" class="pantalla">
+  <div class="caja login-caja" role="dialog" aria-labelledby="lgTitulo">
+    <div class="logo" aria-hidden="true">
+      <svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9l10-5 10 5-10 5L2 9z"/><path d="M6 11.5V16c0 1.2 2.7 3 6 3s6-1.8 6-3v-4.5"/><path d="M22 9v6"/></svg>
+    </div>
+    <div class="lg-tit">
+      <h2 id="lgTitulo">Registro escolar CONVIFACG</h2>
+      <p>Ingresa con tu usuario para continuar</p>
+    </div>
+    <label>Usuario <input id="lgUsuario" autocomplete="username" autocapitalize="none" spellcheck="false" placeholder="Tu usuario"></label>
+    <label>Contraseña
+      <span class="clave-wrap">
+        <input id="lgClave" type="password" autocomplete="current-password" placeholder="Tu contraseña">
+        <button type="button" class="ojo" aria-label="Mostrar u ocultar contraseña"
+          onclick="var i=document.getElementById('lgClave');i.type=i.type==='password'?'text':'password';this.textContent=i.type==='password'?'Ver':'Ocultar'">Ver</button>
+      </span>
+    </label>
+    <p class="msg" id="lgMsg" role="alert"></p>
+    <button class="btn" id="btnIngresar">Ingresar</button>
+  </div>
+</div>
+
+<div id="cambio" class="pantalla">
+  <div class="caja" role="dialog" aria-labelledby="cbTitulo">
+    <h2 id="cbTitulo">Cambiar contraseña</h2>
+    <p class="nota" id="cbNota" style="margin:0"></p>
+    <label>Contraseña actual <input id="cbActual" type="password" autocomplete="current-password"></label>
+    <label>Contraseña nueva (mínimo 8 caracteres, con letras y números) <input id="cbNueva" type="password" autocomplete="new-password"></label>
+    <label>Repite la contraseña nueva <input id="cbRepite" type="password" autocomplete="new-password"></label>
+    <p class="msg" id="cbMsg" role="alert"></p>
+    <button class="btn" id="btnCambiar">Guardar contraseña</button>
+    <button class="btn sec" id="btnCancelarCambio">Cancelar</button>
+  </div>
+</div>
+
+<!-- ============ MODO DE CALIFICACIÓN ============ -->
+<div id="escala" class="pantalla">
+  <div class="caja ancha" role="dialog" aria-labelledby="esTitulo">
+    <h2 id="esTitulo">Modo de calificación</h2>
+    <label class="opc"><input type="radio" name="esModo" value="CIEN">
+      <span><strong>Cada dimensión sobre 100</strong>
+      <small>Ser, Saber, Hacer y Autoevaluación se califican de 0 a 100. El total es el promedio ponderado con los pesos de abajo.</small></span></label>
+    <label class="opc"><input type="radio" name="esModo" value="PUNTOS">
+      <span><strong>Cada dimensión sobre sus puntos</strong>
+      <small>Cada dimensión se califica sobre el puntaje que le des (por ejemplo Ser 10, Saber 25, Hacer 40, Autoevaluación 5). El total es la suma.</small></span></label>
+    <div class="pesos">
+      <label>Ser <input id="esSer" type="number" min="0" max="100" step="0.5" inputmode="decimal"></label>
+      <label>Saber <input id="esSaber" type="number" min="0" max="100" step="0.5" inputmode="decimal"></label>
+      <label>Hacer <input id="esHacer" type="number" min="0" max="100" step="0.5" inputmode="decimal"></label>
+      <label>Autoevaluación <input id="esAutoeval" type="number" min="0" max="100" step="0.5" inputmode="decimal"></label>
+    </div>
+    <p class="nota" id="esSuma" style="margin:0"></p>
+    <p class="nota" style="margin:0">Las notas ya registradas se reescalan en proporción (por ejemplo, un 8 sobre 10 pasa a 20 sobre 25). La nota extracurricular no cambia. Es un ajuste general de toda la unidad educativa.</p>
+    <p class="msg" id="esMsg" role="alert"></p>
+    <button class="btn" id="btnGuardarEscala">Aplicar</button>
+    <button class="btn sec" id="btnCancelarEscala">Cancelar</button>
+  </div>
+</div>
+
+<!-- ============ APLICACIÓN ============ -->
+<div id="app" style="display:none">
+<header>
+  <div class="cab">
+    <div>
+      <h1 id="unidad">Registro escolar</h1>
+      <p id="sub"></p>
+    </div>
+    <div class="usr">
+      <span id="usrNombre"></span>
+      <button id="btnClave">Contraseña</button>
+      <button id="btnSalir">Salir</button>
+    </div>
+  </div>
+  <div class="curso">
+    <label style="flex:1;color:#cfd6e4">Curso
+      <select id="selCurso"></select></label>
+  </div>
+</header>
+<div id="navbox">
+<button id="btnMenu" class="menu-m" aria-expanded="false" aria-controls="navTabs"><span>☰ Menú</span><b id="menuActual">Notas</b></button>
+<nav role="tablist" id="navTabs">
+  <button role="tab" data-t="mis" aria-selected="false" id="tabMis" hidden>Mis cursos</button>
+  <button role="tab" data-t="asis" aria-selected="false">Asistencia</button>
+  <button role="tab" data-t="notas" aria-selected="true">Notas</button>
+  <button role="tab" data-t="kar" aria-selected="false">Kardex</button>
+  <button role="tab" data-t="bol" aria-selected="false">Boletín</button>
+  <button role="tab" data-t="curso" aria-selected="false">Curso</button>
+  <button role="tab" data-t="cen" aria-selected="false" id="tabCen" hidden>Centralizador</button>
+  <button role="tab" data-t="glo" aria-selected="false" id="tabGlo" hidden>Centralizador Global</button>
+  <button role="tab" data-t="usu" aria-selected="false" id="tabUsu" hidden>Usuarios</button>
+  <button role="tab" data-t="his" aria-selected="false" id="tabHis" hidden>Historial</button>
+  <button role="tab" data-t="reg" aria-selected="false" id="tabReg" hidden>Registros</button>
+  <button role="tab" data-t="res" aria-selected="false" id="tabRes" hidden>Respaldos</button>
+</nav>
+</div>
+
+<main>
+  <p class="tarjeta" id="sinCursos" hidden>Todavía no tienes cursos ni áreas asignadas. Entra a la pestaña «Mis cursos» para añadir tus cursos y las materias que regentas (o pide al administrador que te las asigne).</p>
+
+  <!-- NOTAS -->
+  <section id="s-notas" class="on">
+    <div class="barra">
+      <label>Área <select id="selArea"></select></label>
+      <label>Trimestre <select id="selTrim"><option value="1">1.º</option><option value="2">2.º</option><option value="3">3.º</option></select></label>
+      <button class="btn sec" id="btnExtra">Añadir nota extracurricular</button>
+      <button class="btn sec" id="btnEscala" hidden>Modo de calificación</button>
+      <button class="btn" id="btnGuardarNotas">Guardar notas</button>
+    </div>
+    <p class="nota" id="notaPesos"></p>
+    <label id="boxMotivo" hidden style="margin:0 0 10px">Motivo de la nota extracurricular (por qué se añade esta columna)
+  <input id="motivoExtra" maxlength="300" autocomplete="off" placeholder="Ej.: Participación en la feria de ciencias" style="width:100%">
+</label>
+    <div class="tabla"><table id="tNotas"></table></div>
+    <div class="tarjeta noprint" style="margin-top:14px">
+  <strong>Informes automáticos</strong>
+  <p class="nota">Se descargan en Excel con el formato oficial. El informe de dificultad usa el trimestre elegido arriba. Las celdas amarillas (temas, observaciones, adaptaciones) las completas tú antes de imprimir.</p>
+  <div class="barra" style="margin-bottom:0">
+    <label>Incluir <select id="infAlcance"><option value="actual">Solo este curso y área</option><option value="todos">Todos mis cursos y áreas</option></select></label>
+    <label>Periodo <select id="infPeriodo"><option value="0">Anual</option><option value="1">1.er trimestre</option><option value="2">2.º trimestre</option><option value="3">3.er trimestre</option></select></label>
+    <button class="btn" id="btnInfAnual" style="margin-left:0">Informe anual (fin de gestión)</button>
+    <button class="btn sec" id="btnInfDif" style="margin-left:0">Informe de estudiantes con dificultad</button>
+  </div>
+</div>
+      </section>
+
+    <!-- ASISTENCIA -->
+  <section id="s-asis">
+    <div class="barra">
+      <label>Fecha <input type="date" id="fecha"></label>
+      <button class="btn sec" id="btnTodosP">Todos presentes</button>
+      <button class="btn sec" id="btnAvisarFaltas">Avisar faltas por WhatsApp</button>
+      <button class="btn" id="btnGuardarAsis">Guardar asistencia</button>
+    </div>
+    <p class="nota">P presente · F falta · L licencia · R retraso</p>
+    <div class="tabla"><table id="tAsis"></table></div>
+
+    <div class="tarjeta wa-card noprint" id="waFaltas" hidden style="margin-top:14px">
+      <strong>Avisar a los apoderados por WhatsApp</strong>
+      <p class="nota" id="waFaltasNota"></p>
+      <div id="waFaltasLista"></div>
+      <div class="barra" style="margin:8px 0 0">
+        <button class="btn" id="btnWaSiguiente">Abrir el siguiente aviso</button>
+      </div>
+    </div>
+
+    <div class="tarjeta envio" style="margin-top:14px">
+      <strong id="tituloEnvio">Recalcular asistencia en el Ser</strong>
+      <p class="nota" id="notaEnvio"></p>
+      <div class="barra" style="margin-bottom:0">
+        <label>Trimestre <select id="selTrimAsis"><option value="1">1.º</option><option value="2">2.º</option><option value="3">3.º</option></select></label>
+        <label>Área <select id="selAreaAsis"></select></label>
+        <button class="btn sec" id="btnAsisSer">Recalcular</button>
+      </div>
+    </div>
+
+    <!-- Reporte de asistencia por fechas (ahora DENTRO de la pestaña Asistencia) -->
+    <div class="tarjeta noprint" id="cardRepAsis" style="margin-top:14px">
+      <strong>Reporte de asistencia por fechas</strong>
+      <p class="nota">Muestra todas las asistencias registradas de cada estudiante, una columna por fecha, con totales A (asistencia), F (faltas), R (retrasos) y L (licencias).</p>
+      <div class="barra">
+        <label>Desde <input type="date" id="raDesde"></label>
+        <label>Hasta <input type="date" id="raHasta"></label>
+        <label class="chk"><input type="checkbox" id="raTodos"> <span id="raTodosTxt">Todos mis cursos</span></label>
+      </div>
+      <div class="barra" style="margin-bottom:0">
+        <button class="btn sec" id="btnRaVer">Ver en pantalla</button>
+        <button class="btn" id="btnRaExcel">Descargar Excel</button>
+        <button class="btn sec" id="btnRaImprimir">Imprimir</button>
+      </div>
+    </div>
+    <div id="raResultado"></div>
+  </section>
+
+  <!-- KARDEX -->
+  <section id="s-kar">
+    <div class="tarjeta">
+      <strong>Registrar en el Kardex</strong>
+      <div class="barra" style="margin-top:8px">
+        <label>Fecha <input type="date" id="kFecha"></label>
+        <label>Tipo <select id="kTipo"></select></label>
+        <label>Materia <select id="kArea"></select></label>
+      </div>
+      <p class="nota" style="margin-bottom:0">Marca uno o varios estudiantes:</p>
+      <div id="kEsts" class="areas-grid"></div>
+      <label>Observación (opcional) <textarea id="kDetalle" maxlength="500" style="min-height:70px"></textarea></label>
+      <div style="margin-top:8px"><button class="btn" id="btnKGuardar">Guardar en el Kardex</button></div>
+    </div>
+    <div class="tarjeta">
+      <div class="barra">
+        <strong style="align-self:center">Historial del curso</strong>
+        <label>Estudiante <select id="kFiltroEst"></select></label>
+        <label>Tipo <select id="kFiltroTipo"></select></label>
+        <button class="btn sec" id="btnKExcel">Descargar Excel</button>
+      </div>
+      <p class="nota" id="kResumen"></p>
+      <div class="tabla"><table id="tKardex"></table></div>
+    </div>
+  </section>
+
+  <!-- BOLETÍN -->
+  <section id="s-bol">
+    <div class="barra">
+      <label>Estudiante <select id="selEst"></select></label>
+      <button class="btn sec" id="btnImprimir">Imprimir</button>
+      <button class="btn" id="btnWa">Enviar por WhatsApp</button>
+    </div>
+    <div class="barra">
+      <button class="btn sec" id="btnTodas">Ver todas las calificaciones del curso</button>
+      <label>WhatsApp destino <input id="waDestino" type="tel" inputmode="tel" placeholder="71234567" size="14"></label>
+      <button class="btn" id="btnExcelWa">Generar Excel para WhatsApp</button>
+      <button class="btn sec" id="btnSieCurso" title="Planilla para la extensión Importador de Calificaciones SIE">Exportar para importador SIE</button>
+    </div>
+        <div class="barra">
+      <button class="btn" id="btnLibreta" hidden>Imprimir libreta del estudiante</button>
+      <button class="btn" id="btnLibretasCurso" hidden>Imprimir libretas del curso</button>
+      <button class="btn sec" id="btnLibretaPdf" hidden>PDF del estudiante</button>
+      <button class="btn sec" id="btnLibretasPdf" hidden>PDF de todo el curso</button>
+    </div>
+    <div class="tarjeta wa-card noprint" id="waCard" hidden>
+      <strong id="waTitulo"></strong>
+      <p class="nota" id="waNota"></p>
+      <div class="barra">
+        <button class="btn" id="btnWaAbrir">Abrir WhatsApp</button>
+        <button class="btn sec" id="btnWaCompartir" hidden>Compartir el archivo</button>
+        <button class="btn sec" id="btnWaDescargar">Descargar de nuevo</button>
+      </div>
+    </div>
+    <div id="boletin"><div class="vacio">Elige un estudiante para ver su boletín.</div></div>
+  </section>
+
+  <!-- CURSO -->
+  <section id="s-curso">
+    <div class="tarjeta noprint" id="cardAgregar">
+      <strong>Agregar estudiantes</strong>
+      <p class="nota">Una línea por estudiante: APELLIDOS NOMBRES; celular; RUDE (celular y RUDE son opcionales; para omitir el celular deja el hueco: APELLIDOS NOMBRES;;RUDE). Si el estudiante ya existe y pones su RUDE, se le actualiza. Para un curso nuevo, escribe curso y paralelo abajo.</p>
+      <div class="barra">
+        <label>Curso <input id="nuevoCurso" size="4" placeholder="1"></label>
+        <label>Paralelo <input id="nuevoPar" size="4" placeholder="A"></label>
+      </div>
+      <textarea id="txtEst" placeholder="PEREZ LOPEZ JUAN; 71234567; 4073008220145800&#10;MAMANI CRUZ ANA;;4073008220145801"></textarea>
+      <div style="margin-top:8px"><button class="btn" id="btnAgregar">Agregar a la lista</button></div>
+    </div>
+    <div class="tarjeta">
+      <div class="barra" style="margin-bottom:8px;justify-content:space-between;align-items:center">
+        <strong>Lista del curso</strong>
+        <span class="noprint" id="accionesLista" style="display:flex;gap:8px;flex-wrap:wrap">
+          <button class="btn sec" id="btnNuevoEst">+ Añadir estudiante</button>
+          <button class="btn sec" id="btnOrdenarEst">Ordenar por apellidos y nombres</button>
+        </span>
+      </div>
+      <div id="formNuevoEst" hidden style="border:1px solid var(--linea);border-radius:10px;padding:12px;margin-bottom:10px;background:#FAFBFD">
+        <div class="barra">
+          <label style="flex:2 1 260px">Apellidos y nombres <input id="neNombre" autocomplete="off" placeholder="PEREZ LOPEZ JUAN"></label>
+          <label>Celular <input id="neCel" type="tel" inputmode="tel" placeholder="71234567"></label>
+          <label>RUDE <input id="neRude" inputmode="numeric" placeholder="(opcional)"></label>
+        </div>
+        <div class="barra" style="margin-bottom:0">
+          <button class="btn" id="btnNeGuardar">Guardar estudiante</button>
+          <button class="btn sec" id="btnNeCancelar">Cancelar</button>
+        </div>
+      </div>
+      <div id="listaEst"></div>
+    </div>
+    <div class="barra noprint">
+      <button class="btn sec" id="btnCentral">Ver centralizador del curso</button>
+      <button class="btn sec" id="btnEliminarCurso" hidden style="color:var(--mal);border-color:var(--mal)">Eliminar este curso</button>
+    </div>
+    <div class="tabla" id="boxCentral" style="display:none"><table id="tCentral"></table></div>
+  </section>
+
+  <!-- MIS CURSOS Y ÁREAS (maestros) -->
+  <section id="s-mis">
+    <div class="tarjeta">
+      <strong>Mis cursos y áreas</strong>
+      <p class="nota">1) Elige un curso de la lista. 2) Marca las materias que regentas en él. Repite con otros cursos y al final pulsa «Guardar». Si tu curso no aparece, añádelo abajo. Al guardar se reemplazan solo tus asignaciones.</p>
+      <div class="barra">
+        <label style="min-width:220px">Curso <select id="misCurso"></select></label>
+        <button class="btn sec" id="btnMisQuitar">Quitar este curso de mi lista</button>
+      </div>
+      <div id="misAreas" class="areas-grid"></div>
+      <div class="barra">
+        <label>Curso nuevo <input id="misNuevoCurso" size="4" maxlength="4" placeholder="1"></label>
+        <label>Paralelo <input id="misNuevoPar" size="4" maxlength="4" placeholder="A"></label>
+        <button class="btn sec" id="btnMisAnadir">Añadir curso</button>
+      </div>
+      <button class="btn" id="btnMisGuardar">Guardar mis cursos y áreas</button>
+      <p class="nota" id="misResumen"></p>
+    </div>
+  </section>
+
+  <!-- BOLETÍN CENTRALIZADOR (solo administrador) -->
+  <section id="s-cen">
+    <div class="barra">
+      <label>Curso <select id="cenCurso"></select></label>
+      <button class="btn sec" id="btnCenActualizar">Actualizar ahora</button>
+      <button class="btn" id="btnCenExcel">Descargar Excel</button>
+      <button class="btn sec" id="btnCenImprimir">Imprimir</button>
+    </div>
+    <p class="nota" id="cenNota"></p>
+    <div id="cenResumen"></div>
+    <div id="cenTablas"></div>
+  </section>
+
+  <!-- CENTRALIZADOR GLOBAL (solo administrador) -->
+  <section id="s-glo">
+    <div class="barra">
+      <label>Curso <select id="gloCurso"></select></label>
+      <button class="btn sec" id="btnGloActualizar">Actualizar ahora</button>
+      <button class="btn" id="btnGloExcel">Descargar Excel</button>
+      <button class="btn sec" id="btnGloSie" title="Planilla para la extensión Importador de Calificaciones SIE">Exportar para importador SIE</button>
+      <button class="btn sec" id="btnGloImprimir">Imprimir</button>
+    </div>
+    <p class="nota" id="gloNota"></p>
+    <div id="gloContenido"></div>
+  </section>
+  <!-- HISTORIAL DE CALIFICACIONES (solo administrador) -->
+  <section id="s-his">
+    <div class="barra">
+      <label>Curso <select id="hCurso"></select></label>
+      <label>Estudiante <select id="hEst"></select></label>
+      <label>Área <select id="hArea"></select></label>
+      <label>Docente <select id="hDoc"></select></label>
+      <button class="btn" id="hBtn">Buscar</button>
+    </div>
+    <div class="tarjeta">
+  <strong>Registro completo del docente (copia fiel)</strong>
+  <p class="nota">Muestra lo mismo que cargó el docente: asistencia por fecha, celdas de Ser, Saber, Hacer y Autoevaluación, promedios, extracurricular y nota del trimestre.</p>
+  <div class="barra" style="margin-bottom:0">
+    <label>Curso <select id="hrCurso"></select></label>
+    <label>Área <select id="hrArea"></select></label>
+    <label>Trimestre <select id="hrTrim">
+      <option value="*">Los 3 trimestres</option><option value="1">1.º</option><option value="2">2.º</option><option value="3">3.º</option></select></label>
+    <button class="btn" id="hrVer">Ver registro</button>
+    <button class="btn sec" id="hrExcel">Descargar Excel</button>
+  </div>
+
+  <div class="barra" style="margin:10px 0 0;padding-top:10px;border-top:1px solid var(--linea)">
+    <label class="chk"><input type="checkbox" id="hrConAsis"> <span>Borrar también la asistencia (solo con «Todas las áreas»)</span></label>
+    <button class="btn sec" id="hrReiniciar" style="color:var(--mal);border-color:var(--mal)">Reinicializar todo</button>
+  </div>
+</div>
+<div id="hrResultado"></div>
+    <p class="nota" id="hNota"></p>
+    <div class="tabla"><table id="tHis"></table></div>
+  </section>
+  <!-- REGISTROS DE LOS DOCENTES (solo administrador) -->
+  <section id="s-reg">
+    <div class="tarjeta">
+      <strong>Registro de calificaciones de los docentes (Excel)</strong>
+      <p class="nota">Genera una copia fiel del registro de cada docente: asistencia por fecha, celdas de Ser, Saber, Hacer y Autoevaluación, promedios, extracurricular y nota del trimestre. Se crea una hoja por curso, área y trimestre, con los datos actuales del sistema.</p>
+      <div class="barra">
+        <label>Curso <select id="rgCurso"></select></label>
+        <label>Área <select id="rgArea"></select></label>
+        <label>Trimestre <select id="rgTrim"><option value="*">Los 3 trimestres</option><option value="1">1.º</option><option value="2">2.º</option><option value="3">3.º</option></select></label>
+        <button class="btn" id="btnRegExcel">Descargar Excel</button>
+      </div>
+    </div>
+    <div class="tarjeta">
+      <strong>Centralizador por curso y paralelo (listo para el importador SIE)</strong>
+      <p class="nota">Reúne en un solo Excel las notas finales que cargaron todos los docentes: una hoja por curso, con cada área (código, docente, 1T, 2T, 3T y PA), RUDE y sexo de cada estudiante, promedios, reprobados y mejores promedios. Tiene el mismo formato de tu planilla (por ejemplo 6B_SEC_CENT.xlsx) y se carga directamente en la extensión «Importador de Calificaciones SIE». Se actualiza con los datos más recientes al descargar.</p>
+      <div class="barra" style="margin-bottom:0">
+        <label>Curso y paralelo <select id="csCurso"></select></label>
+        <button class="btn" id="btnCentSie">Descargar centralizador (Excel)</button>
+      </div>
+    </div>
+  </section>
+    <!-- RESPALDOS (solo administrador) -->
+  <section id="s-res">
+    <div class="barra">
+      <button class="btn" id="rCrear">Crear respaldo ahora</button>
+      <button class="btn sec" id="rProbar">Probar último respaldo</button>
+    </div>
+    <p class="nota">Se guarda una copia completa cada noche (se conservan las últimas 30). «Probar» abre el último respaldo y verifica que está completo y reciente.</p>
+    <div class="tarjeta" id="rResultado" hidden></div>
+    <div class="tabla"><table id="tResp"></table></div>
+  </section>
+  <!-- USUARIOS (solo administrador) -->
+  <section id="s-usu">
+    <div class="tarjeta">
+      <div class="barra" style="margin-bottom:8px;justify-content:space-between;align-items:center">
+        <strong>Usuarios del sistema</strong>
+        <button class="btn sec" id="btnNuevoUsuario">Nuevo usuario</button>
+      </div>
+      <div class="tabla"><table id="tUsu"></table></div>
+    </div>
+    <div class="tarjeta">
+      <strong id="tituloUsuario">Nuevo usuario</strong>
+      <div class="barra" style="margin-top:8px">
+        <label>Usuario <input id="uUsuario" autocomplete="off" autocapitalize="none" spellcheck="false" placeholder="jperez"></label>
+        <label>Nombre <input id="uNombre" autocomplete="off" placeholder="JUAN PEREZ"></label>
+        <label>Rol <select id="uRol"><option value="MAESTRO">Maestro</option><option value="ADMIN">Administrador</option></select></label>
+        <label>Contraseña <input id="uClave" type="password" autocomplete="new-password"></label>
+        <label class="chk" style="margin-bottom:0"><input type="checkbox" id="uActivo" checked> Activo</label>
+      </div>
+      <p class="nota" id="notaClave"></p>
+      <button class="btn" id="btnGuardarUsuario">Guardar usuario</button>
+    </div>
+    <div class="tarjeta" id="cardAsign" style="display:none">
+      <strong id="tituloAsign"></strong>
+      <p class="nota">Elige el curso y marca las áreas que regenta. Al guardar, se reemplazan las áreas de ese curso.</p>
+      <div class="barra"><label>Curso <select id="asCurso"></select></label></div>
+      <div id="asAreas" class="areas-grid"></div>
+      <button class="btn" id="btnAsignar">Guardar áreas del curso</button>
+      <p class="nota" id="resumenAsign"></p>
+    </div>
+  </section>
+</main>
+</div>
+
+<div id="libretaImp"></div>
+<div id="libretaPdf"></div>
+<div id="pdfOverlay" class="pantalla" style="z-index:70;color:#fff;text-align:center;font-weight:700">
+  <div id="pdfMsg">Generando PDF…</div>
+</div>
+<div id="aviso" role="status" aria-live="polite"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.4.0/exceljs.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script>
+(function(){
+  var nav = document.querySelector('nav[role="tablist"]');
+  if(!nav) return;
+
+  var box = document.getElementById('navbox');
+  if(!box){
+    box = document.createElement('div'); box.id = 'navbox';
+    nav.parentNode.insertBefore(box, nav); box.appendChild(nav);
+  }
+
+  // Quita cualquier botón de menú anterior (con sus controladores duplicados) y crea uno limpio
+  document.querySelectorAll('#btnMenu').forEach(function(b){ b.remove(); });
+  var btn = document.createElement('button');
+  btn.id = 'btnMenu'; btn.type = 'button'; btn.className = 'menu-m';
+  btn.setAttribute('aria-expanded', 'false');
+  btn.innerHTML = '<span>☰ Menú</span><b id="menuActual"></b>';
+  box.insertBefore(btn, box.firstChild);
+
+  var etiqueta = btn.querySelector('#menuActual');
+  var abierto = false;
+
+  function movil(){ return window.matchMedia('(max-width:760px)').matches; }
+  function pintar(){
+    box.classList.toggle('abierto', abierto);
+    btn.setAttribute('aria-expanded', abierto ? 'true' : 'false');
+    if(movil() && abierto){
+      nav.style.display = 'grid';
+      nav.style.gridTemplateColumns = '1fr 1fr';
+    } else {
+      nav.style.display = '';
+      nav.style.gridTemplateColumns = '';
+
+    }
+  }
+  function sync(){
+    var b = nav.querySelector('button[aria-selected="true"]');
+    if(etiqueta) etiqueta.textContent = b ? b.textContent : '';
+  }
+
+  btn.addEventListener('click', function(e){
+    e.stopPropagation();
+    abierto = !abierto;
+    pintar();
+  });
+  nav.addEventListener('click', function(e){
+    if(e.target.closest('button')){ abierto = false; pintar(); window.scrollTo(0, 0); }
+  });
+  document.addEventListener('click', function(e){
+    if(abierto && !box.contains(e.target)){ abierto = false; pintar(); }
+  });
+  window.addEventListener('resize', pintar);
+  new MutationObserver(sync).observe(nav, { attributes: true, subtree: true, attributeFilter: ['aria-selected'] });
+   sync(); pintar();
+})();
+</script>
+<script>
+const $ = s => document.querySelector(s);
+const DIMS = ['Ser','Saber','Hacer','Autoeval'];
+const ETIQ = { Ser:'Ser', Saber:'Saber', Hacer:'Hacer', Autoeval:'Autoevaluación' };
+let CEN = null, cenTimer = null;
+let TOKEN = null, INI = null, ESTS = [], BOL = null, BOLC = null, XLSX_FILE = null, NOTAS = null, EXTRA = false, USU = [], USEL = null;
+
+/* ---------- Utilidades ---------- */
+function run(fn, ...args){
+  return new Promise((ok, err) =>
+    google.script.run.withSuccessHandler(ok).withFailureHandler(e => {
+      const m = String((e && e.message) || e);
+      if(m.indexOf('SESION_EXPIRADA') >= 0){ cerrarSesion('Tu sesión expiró. Ingresa de nuevo.'); err(new Error('Tu sesión expiró. Ingresa de nuevo.')); }
+      else err(new Error(m));
+    })[fn](...args));
+}
+const api = (fn, ...args) => run(fn, TOKEN, ...args);
+function esc(s){ return String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+let tAviso;
+function aviso(msg, mal){
+  const a = $('#aviso'); a.textContent = msg; a.className = mal ? 'mal' : ''; a.style.display = 'block';
+  clearTimeout(tAviso); tAviso = setTimeout(() => a.style.display = 'none', 4500);
+}
+async function seguro(fn){
+  try { return await fn(); }
+  catch(e){
+    aviso(e.message, true);
+    if(TOKEN && String(e.message).indexOf('sesión') < 0) run('apiRegistrarError', TOKEN, e.message).catch(() => {});
+  }
+}
+function curso(){ const v = $('#selCurso').value; if(!v) return null; const [c,p] = v.split('|'); return {c,p}; }
+const clase = n => n === null || n === '' || n === undefined ? '' : (n >= INI.notaMinima ? 'apr' : 'rep');
+const esAdmin = () => INI && INI.usuario.rol === 'ADMIN';
+const nomArea = cod => { const a = INI.areas.find(x => x.cod === cod); return a ? a.nombre : cod; };
+
+/* ---------- Acceso ---------- */
+function mostrarLogin(msg){
+  $('#app').style.display = 'none'; $('#cambio').style.display = 'none'; $('#escala').style.display = 'none';
+  $('#login').style.display = 'flex';
+  $('#lgMsg').textContent = msg || '';
+  $('#lgUsuario').focus();
+}
+function cerrarSesion(msg){
+  TOKEN = null; INI = null; CEN = null; clearInterval(cenTimer);
+  MISSEL = {}; MISEXTRA = [];
+  try { sessionStorage.removeItem('tk'); } catch(e){}
+  mostrarLogin(msg);
+}
+async function ingresar(){
+  const u = $('#lgUsuario').value.trim(), c = $('#lgClave').value;
+  if(!u || !c){ $('#lgMsg').textContent = 'Escribe tu usuario y contraseña.'; return; }
+  const b = $('#btnIngresar'); b.disabled = true; $('#lgMsg').textContent = '';
+  try {
+    const r = await run('apiLogin', u, c);
+    TOKEN = r.token;
+    try { sessionStorage.setItem('tk', TOKEN); } catch(e){}
+    $('#lgClave').value = '';
+    await iniciar();
+  } catch(e){ $('#lgMsg').textContent = e.message; }
+  finally { b.disabled = false; }
+}
+$('#btnIngresar').onclick = ingresar;
+['#lgUsuario','#lgClave'].forEach(s => $(s).addEventListener('keydown', e => { if(e.key === 'Enter') ingresar(); }));
+$('#btnSalir').onclick = async () => { try { await run('apiLogout', TOKEN); } catch(e){} cerrarSesion(''); };
+
+function abrirCambio(forzado){
+  ['#cbActual','#cbNueva','#cbRepite'].forEach(s => $(s).value = '');
+  $('#cbMsg').textContent = '';
+  $('#cbNota').textContent = forzado ? 'Por seguridad debes crear una contraseña personal antes de continuar.' : '';
+  $('#btnCancelarCambio').style.display = forzado ? 'none' : '';
+  $('#cambio').style.display = 'flex';
+  $('#cbActual').focus();
+}
+$('#btnClave').onclick = () => abrirCambio(false);
+$('#btnCancelarCambio').onclick = () => $('#cambio').style.display = 'none';
+$('#btnCambiar').onclick = async () => {
+  const a = $('#cbActual').value, n = $('#cbNueva').value, r = $('#cbRepite').value;
+  if(n !== r){ $('#cbMsg').textContent = 'Las contraseñas nuevas no coinciden.'; return; }
+  const b = $('#btnCambiar'); b.disabled = true;
+  try {
+    await api('apiCambiarClave', a, n);
+    $('#cambio').style.display = 'none';
+    aviso('Contraseña actualizada');
+    await iniciar();
+  } catch(e){ $('#cbMsg').textContent = e.message; }
+  finally { b.disabled = false; }
+};
+
+/* ---------- Inicio ---------- */
+async function arrancar(){
+  mostrarLogin('');
+  try { TOKEN = sessionStorage.getItem('tk') || null; } catch(e){ TOKEN = null; }
+  if(!TOKEN) return;
+  try { await iniciar(); }
+  catch(e){
+    const m = String((e && e.message) || e);
+    cerrarSesion(m.indexOf('sesión') >= 0 ? '' : 'Error al iniciar: ' + m);
+  }
+}
+
+/** Textos que dependen del modo de calificación vigente. */
+function aplicarEscalaUI(){
+  const cien = INI.modo === 'CIEN';
+  const pesosTxt = DIMS.map(d => cien
+    ? `${ETIQ[d]} sobre 100 (vale ${INI.pesosTotal[d]})`
+    : `${ETIQ[d]} ${INI.pesos[d]}`).join(' · ');
+  $('#notaPesos').textContent = pesosTxt +
+    ` · cada celda se califica de 0 al máximo de su dimensión y la dimensión es el promedio de sus celdas · ` +
+    (cien ? 'el total es el promedio ponderado de las dimensiones · ' : '') +
+    `la nota extracurricular suma hasta ${INI.maxExtra} puntos y el total no pasa de ${INI.tope} · aprueba con ${INI.notaMinima}`;
+  $('#tituloEnvio').textContent = `Recalcular asistencia en el Ser (sobre ${INI.pesos.Ser})`;
+  $('#notaEnvio').textContent = 'La celda «Asistencia» del Ser se crea y se actualiza sola al guardar la asistencia (una sola por área y trimestre). Presente y licencia cuentan completo, retraso cuenta la mitad y falta no suma. Usa este botón solo si quieres forzar el recálculo.';
+}
+
+async function iniciar(){
+  INI = await api('apiInicio');
+  $('#login').style.display = 'none';
+  $('#app').style.display = 'block';
+  $('#unidad').textContent = INI.unidad || 'Registro escolar';
+  $('#sub').textContent = 'Gestión ' + INI.gestion;
+  $('#usrNombre').textContent = INI.usuario.nombre + (esAdmin() ? ' · Admin' : '');
+  if(INI.usuario.debeCambiar){ abrirCambio(true); return; }
+  $('#tabUsu').hidden = !esAdmin();
+  $('#tabCen').hidden = !esAdmin();
+  $('#tabGlo').hidden = !esAdmin();
+  $('#tabHis').hidden = !esAdmin();
+  $('#tabReg').hidden = !esAdmin();
+  $('#tabRes').hidden = !esAdmin();
+    $('#btnLibreta').hidden = $('#btnLibretasCurso').hidden = $('#btnLibretaPdf').hidden = $('#btnLibretasPdf').hidden = !esAdmin();
+  $('#btnEscala').hidden = !INI.puedeModoCalif;
+  $('#btnEliminarCurso').hidden = !esAdmin();
+  $('#tabMis').hidden = esAdmin() || !INI.puedeElegir;
+  $('#cardAgregar').style.display = (esAdmin() || INI.puedeElegir) ? '' : 'none';
+      try { iniciarReporteAsistencia(); } catch(e){ console.error(e); }
+  aplicarEscalaUI();
+  $('#selTrim').value = $('#selTrimAsis').value = String(INI.trimActual);
+  $('#fecha').value = INI.hoy;
+  $('#selCurso').innerHTML = INI.cursos.length
+    ? INI.cursos.map(x => `<option value="${esc(x.curso)}|${esc(x.paralelo)}">${esc(x.curso)}.º ${esc(x.paralelo)}</option>`).join('')
+    : '<option value="">Sin cursos</option>';
+  $('#sinCursos').hidden = INI.cursos.length > 0 || esAdmin();
+  if(!INI.cursos.length && esAdmin()){ mostrar('curso'); aviso('Agrega tu primer curso en la pestaña Curso.'); }
+  else if(!INI.cursos.length && !$('#tabMis').hidden){ mostrar('mis'); aviso('Añade tus cursos y materias en «Mis cursos».'); }
+  else mostrar('notas');
+  await cargarCurso();
+}
+
+function llenarAreas(){
+  const k = curso();
+  const cods = k ? (INI.asign[k.c + '|' + k.p] || []) : [];
+  const lista = INI.areas.filter(a => cods.indexOf(a.cod) >= 0);
+  const ops = lista.map(a => `<option value="${a.cod}">${a.cod} · ${esc(a.nombre)}</option>`).join('');
+  $('#selArea').innerHTML = ops;
+  $('#selAreaAsis').innerHTML = lista.length ? `<option value="*">${esAdmin() ? 'Todas las áreas' : 'Todas mis áreas'}</option>` + ops : '';
+}
+
+async function cargarCurso(){
+  const k = curso();
+  ESTS = k ? (await seguro(() => api('apiEstudiantes', k.c, k.p))) || [] : [];
+  $('#selEst').innerHTML = '<option value="">Elegir…</option>' + ESTS.map(e => `<option value="${e.id}">${esc(e.nombre)}</option>`).join('');
+  $('#boletin').innerHTML = '<div class="vacio">Elige un estudiante para ver su boletín.</div>';
+  $('#boxCentral').style.display = 'none';
+  BOLC = null; $('#waCard').hidden = true;
+  llenarAreas(); pintarLista(); cargarNotas(); cargarAsis();
+  if($('#s-kar').classList.contains('on')) cargarKardex();
+}
+
+function mostrar(t){
+  document.querySelectorAll('nav button').forEach(b => b.setAttribute('aria-selected', b.dataset.t === t));
+  document.querySelectorAll('section').forEach(s => s.classList.toggle('on', s.id === 's-' + t));
+  if(t === 'usu') cargarUsuarios();
+  if(t === 'mis') pintarMis(Object.keys(MISSEL).length > 0);
+  if(t === 'kar') cargarKardex();
+  if(t === 'glo' && esAdmin()) cargarGlobal(false);
+  if(t === 'his' && esAdmin()) iniciarHistorial();
+  if(t === 'reg' && esAdmin()) iniciarRegistros();
+  if(t === 'res' && esAdmin()) cargarRespaldos();
+  clearInterval(cenTimer);
+  if(t === 'cen' && esAdmin()){
+    cargarCentral();
+    cenTimer = setInterval(() => { if(!document.hidden && TOKEN) cargarCentral(); }, 60000);   // se refresca solo cada minuto
+  }
+}
+
+/* ---------- Modo de calificación ---------- */
+function sumaEscala(){
+  const s = DIMS.reduce((a, d) => a + (Number($('#es' + d).value) || 0), 0);
+  const modo = document.querySelector('input[name="esModo"]:checked').value;
+  const t = $('#esSuma');
+  t.textContent = (modo === 'CIEN' ? 'Pesos en el total: ' : 'Puntos en total: ') + s +
+    (Math.abs(s - 100) < 0.001 ? ' · correcto' : (s > 100 ? ` · te pasas por ${Math.round((s - 100) * 100) / 100}` : ` · faltan ${Math.round((100 - s) * 100) / 100} para llegar a 100`));
+  t.style.color = Math.abs(s - 100) < 0.001 ? 'var(--ok)' : 'var(--mal)';
+}
+function abrirEscala(){
+  document.querySelector(`input[name="esModo"][value="${INI.modo}"]`).checked = true;
+  DIMS.forEach(d => $('#es' + d).value = INI.pesosTotal[d]);
+  $('#esMsg').textContent = '';
+  sumaEscala();
+  $('#escala').style.display = 'flex';
+}
+$('#btnEscala').onclick = abrirEscala;
+$('#btnCancelarEscala').onclick = () => $('#escala').style.display = 'none';
+$('#escala').addEventListener('input', sumaEscala);
+$('#btnGuardarEscala').onclick = async () => {
+  const modo = document.querySelector('input[name="esModo"]:checked').value;
+  const pesos = {}; DIMS.forEach(d => pesos[d] = $('#es' + d).value);
+  const suma = DIMS.reduce((a, d) => a + (Number(pesos[d]) || 0), 0);
+  if(Math.abs(suma - 100) > 0.001){ $('#esMsg').textContent = 'Los puntos deben sumar exactamente 100 (ahora suman ' + Math.round(suma * 100) / 100 + ').'; return; }
+  if(!confirm('Se reescalarán las notas ya registradas de todos los cursos, áreas y trimestres. La nota extracurricular no cambia. ¿Continuar?')) return;
+  const b = $('#btnGuardarEscala'); b.disabled = true; $('#esMsg').textContent = '';
+  try {
+    const r = await api('apiGuardarEscala', modo, pesos);
+    INI = await api('apiInicio');
+    aplicarEscalaUI();
+    $('#escala').style.display = 'none';
+    aviso('Modo aplicado. Notas recalculadas: ' + r.recalculadas);
+    await cargarNotas();
+  } catch(e){ $('#esMsg').textContent = e.message; }
+  finally { b.disabled = false; }
+};
+
+/* ---------- Notas: celdas por dimensión ---------- */
+async function cargarNotas(){
+  const k = curso(), area = $('#selArea').value, t = $('#tNotas');
+  if(!k){ t.innerHTML = '<tr><td class="vacio">Agrega estudiantes para empezar.</td></tr>'; $('#boxMotivo').hidden = true; return; }
+  if(!area){ t.innerHTML = '<tr><td class="vacio">No tienes áreas asignadas en este curso.</td></tr>'; NOTAS = null; $('#boxMotivo').hidden = true; return; }
+  const r = await seguro(() => api('apiNotas', k.c, k.p, area, $('#selTrim').value));
+  if(!r) return;
+  EXTRA = r.filas.some(f => f.extra !== '' && f.extra !== null && f.extra !== undefined);
+  $('#motivoExtra').value = r.motivoExtra || '';
+  renderNotas(r);
+}
+
+function etiquetaExtra(){
+  $('#btnExtra').textContent = EXTRA ? 'Quitar nota extracurricular' : 'Añadir nota extracurricular';
+  $('#boxMotivo').hidden = !EXTRA;
+}
+
+function renderNotas(st){
+  NOTAS = st;
+  etiquetaExtra();
+  const t = $('#tNotas');
+  if(!st.filas.length){ t.innerHTML = '<tr><td class="vacio">Este curso no tiene estudiantes.</td></tr>'; return; }
+  const cien = INI.modo === 'CIEN';
+  let h1 = '<tr><th class="n" rowspan="2">Estudiante</th>', h2 = '<tr>';
+  DIMS.forEach(d => {
+    h1 += `<th class="grupo" colspan="${st.criterios[d].length + 1}">${ETIQ[d]} <span class="nota">/ ${INI.pesos[d]}${cien ? ' · vale ' + INI.pesosTotal[d] : ''}</span>
+      <button class="mini" data-mas="${d}" aria-label="Agregar una celda en ${ETIQ[d]}">+ celda</button></th>`;
+    st.criterios[d].forEach((nom, i) => {
+      h2 += `<th class="crit"><input class="cn" data-d="${d}" value="${esc(nom)}" aria-label="Nombre de la celda ${i + 1} de ${ETIQ[d]}">
+        <button class="mini x" data-menos="${d}" data-i="${i}" aria-label="Quitar la celda ${esc(nom)}">×</button></th>`;
+    });
+    h2 += '<th>Promedio</th>';
+  });
+  if(EXTRA) h1 += `<th class="grupo extra" rowspan="2">Extra <span class="nota">0 a ${INI.maxExtra}</span></th>`;
+  h1 += '<th rowspan="2">Total</th></tr>'; h2 += '</tr>';
+  const cuerpo = st.filas.map(f => {
+    let tds = `<td class="n">${esc(f.nombre)}</td>`;
+    DIMS.forEach(d => {
+      f.valores[d].forEach((v, i) => {
+        tds += `<td><input class="v" type="number" inputmode="decimal" step="0.5" min="0" max="${INI.pesos[d]}" data-d="${d}"
+          value="${v ?? ''}" aria-label="${esc(st.criterios[d][i])} (${ETIQ[d]}) de ${esc(f.nombre)}"></td>`;
+      });
+      tds += `<td class="prom" data-d="${d}"></td>`;
+    });
+    if(EXTRA) tds += `<td class="celda-extra"><input class="ex" type="number" inputmode="decimal" step="0.5" min="0" max="${INI.maxExtra}"
+      value="${f.extra ?? ''}" aria-label="Nota extracurricular de ${esc(f.nombre)}"></td>`;
+    return `<tr data-id="${f.id}" data-nombre="${esc(f.nombre)}">${tds}<td class="tot"></td></tr>`;
+  }).join('');
+  t.innerHTML = `<thead>${h1}${h2}</thead><tbody>${cuerpo}</tbody>`;
+  t.querySelectorAll('tbody tr').forEach(recalcFila);
+  fijarCabecerasNotas();
+}
+
+/** Ajusta la altura de la 2.ª fila de encabezado a la real de la 1.ª para que no se solapen al desplazar. */
+function fijarCabecerasNotas(){
+  const t = $('#tNotas'); let top = 0;
+  t.querySelectorAll('thead tr').forEach(tr => {
+    tr.querySelectorAll('th').forEach(th => th.style.top = Math.max(0, top - 2) + 'px');
+    top += tr.offsetHeight;
+  });
+}
+window.addEventListener('resize', () => { if($('#tNotas thead')) fijarCabecerasNotas(); });
+
+function leerTabla(){
+  const crit = {};
+  DIMS.forEach(d => crit[d] = [...document.querySelectorAll(`#tNotas input.cn[data-d="${d}"]`)].map(i => i.value));
+  const filas = [...document.querySelectorAll('#tNotas tbody tr')].map(tr => {
+    const valores = {};
+    DIMS.forEach(d => valores[d] = [...tr.querySelectorAll(`input.v[data-d="${d}"]`)].map(i => i.value));
+    const ex = tr.querySelector('input.ex');
+    return { id: tr.dataset.id, nombre: tr.dataset.nombre, valores, extra: ex ? ex.value : '' };
+  });
+  return { criterios: crit, filas };
+}
+
+function recalcFila(tr){
+  const cien = INI.modo === 'CIEN';
+  let suma = 0, hay = false;
+  DIMS.forEach(d => {
+    const vs = [...tr.querySelectorAll(`input.v[data-d="${d}"]`)].filter(i => i.value !== '').map(i => Number(i.value));
+    const td = tr.querySelector(`td.prom[data-d="${d}"]`);
+    if(vs.length){
+      const p = Math.round(vs.reduce((a, b) => a + b, 0) / vs.length * 10) / 10;
+      td.textContent = p; suma += cien ? p * INI.pesosTotal[d] / 100 : p; hay = true;
+    } else td.textContent = '';
+  });
+  const ex = tr.querySelector('input.ex');
+  const extra = ex && ex.value !== '' ? Number(ex.value) || 0 : 0;
+  const total = hay ? Math.min(INI.tope, Math.round(suma + extra)) : '';
+  const tt = tr.querySelector('.tot');
+  tt.textContent = total;
+  tt.className = 'tot ' + (hay ? clase(total) : '');
+  tt.title = hay && extra ? `Incluye ${extra} de nota extracurricular (máximo ${INI.tope})` : '';
+}
+
+$('#tNotas').addEventListener('input', e => {
+  const i = e.target;
+  if(!i.classList.contains('v') && !i.classList.contains('ex')) return;
+  i.classList.toggle('exc', i.value !== '' && (Number(i.value) > Number(i.max) || Number(i.value) < 0));
+  recalcFila(i.closest('tr'));
+});
+
+$('#tNotas').addEventListener('click', e => {
+  const b = e.target.closest('button'); if(!b || !NOTAS) return;
+  if(b.dataset.mas){
+    const d = b.dataset.mas, st = leerTabla();
+    if(st.criterios[d].length >= INI.maxCriterios) return aviso('Máximo ' + INI.maxCriterios + ' celdas por dimensión.', true);
+    st.criterios[d].push('Criterio ' + (st.criterios[d].length + 1));
+    st.filas.forEach(f => f.valores[d].push(''));
+    renderNotas(st);
+  } else if(b.dataset.menos){
+    const d = b.dataset.menos, i = Number(b.dataset.i), st = leerTabla();
+    if(st.criterios[d].length <= 1) return aviso('Cada dimensión necesita al menos una celda.', true);
+    st.criterios[d].splice(i, 1);
+    st.filas.forEach(f => f.valores[d].splice(i, 1));
+    renderNotas(st);
+    aviso('Celda quitada. Pulsa «Guardar notas» para confirmar el cambio.');
+  }
+});
+
+$('#btnExtra').onclick = () => {
+  if(!NOTAS) return;
+  const st = leerTabla();
+  EXTRA = !EXTRA;
+  if(!EXTRA){
+    st.filas.forEach(f => f.extra = '');
+    $('#motivoExtra').value = '';
+    aviso('Nota extracurricular quitada. Pulsa «Guardar notas» para confirmar.');
+  }
+  renderNotas(st);
+  if(EXTRA) $('#motivoExtra').focus();
+};
+
+$('#btnGuardarNotas').onclick = () => seguro(async () => {
+  const k = curso(); if(!k || !NOTAS) return;
+  const st = leerTabla();
+  if(!st.filas.length) return;
+  const motivo = EXTRA ? $('#motivoExtra').value.trim() : '';
+  if(EXTRA && !motivo && st.filas.some(f => f.extra !== '')){
+    $('#motivoExtra').focus();
+    return aviso('Escribe el motivo de la nota extracurricular antes de guardar.', true);
+  }
+  const b = $('#btnGuardarNotas'); b.disabled = true;
+  try {
+    const r = await api('apiGuardarNotas', k.c, k.p, $('#selArea').value, $('#selTrim').value, st.criterios, st.filas, motivo);
+    aviso('Notas guardadas: ' + r.guardadas + ' estudiantes');
+  } finally { b.disabled = false; }
+});
+$('#selArea').onchange = $('#selTrim').onchange = cargarNotas;
+
+/* ---------- Asistencia ---------- */
+async function cargarAsis(){
+  const k = curso(), t = $('#tAsis'), f = $('#fecha').value;
+  $('#waFaltas').hidden = true;
+  if(!k || !f){ t.innerHTML = ''; return; }
+  const filas = await seguro(() => api('apiAsistencia', k.c, k.p, f));
+  if(!filas) return;
+  t.innerHTML = '<thead><tr><th class="n">Estudiante</th><th>Estado</th></tr></thead><tbody>' +
+    filas.map(x => `<tr data-id="${x.id}"><td class="n">${esc(x.nombre)}</td><td><div class="seg">` +
+      ['P','F','L','R'].map(e => `<button data-e="${e}" class="${x.estado === e ? 'on' : ''}" aria-label="${e}">${e}</button>`).join('') +
+      '</div></td></tr>').join('') + '</tbody>';
+}
+$('#tAsis').addEventListener('click', e => {
+  const b = e.target.closest('button'); if(!b) return;
+  b.parentNode.querySelectorAll('button').forEach(x => x.classList.toggle('on', x === b));
+});
+$('#btnTodosP').onclick = () => document.querySelectorAll('#tAsis .seg').forEach(s =>
+  s.querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.e === 'P')));
+$('#btnGuardarAsis').onclick = () => seguro(async () => {
+  const filas = [...document.querySelectorAll('#tAsis tbody tr')].map(tr => ({
+    id: tr.dataset.id, estado: (tr.querySelector('button.on') || {dataset:{e:'P'}}).dataset.e }));
+  if(!filas.length) return;
+  const b = $('#btnGuardarAsis'); b.disabled = true;
+  try {
+    const r = await api('apiGuardarAsistencia', $('#fecha').value, filas);
+    const s = r.asistenciaSer || { areas: 0, omitidas: [] };
+    let msg = 'Asistencia guardada (trimestre ' + r.trimestre + ')';
+    if(s.areas) msg += `. Celda «Asistencia» del Ser actualizada en ${s.areas} ${s.areas === 1 ? 'área' : 'áreas'}`;
+    if(s.omitidas.length){ aviso(msg + '. No se pudo crear en ' + s.omitidas.join(', ') + ' (el Ser ya tiene el máximo de celdas)', true); }
+    else aviso(msg);
+    avisarFaltas(true);
+    cargarNotas();
+  } finally { b.disabled = false; }
+});
+$('#fecha').onchange = cargarAsis;
+
+$('#btnAsisSer').onclick = () => seguro(async () => {
+  const k = curso(); if(!k) return aviso('Elige un curso primero.', true);
+  const area = $('#selAreaAsis').value;
+  if(!area) return aviso('No tienes áreas asignadas en este curso.', true);
+  const b = $('#btnAsisSer'); b.disabled = true;
+  try {
+    const r = await api('apiEnviarAsistenciaASer', k.c, k.p, $('#selTrimAsis').value, area);
+    aviso(`Asistencia recalculada en el Ser sobre ${r.sobre}: ${r.estudiantes} estudiantes en ${r.areas} ${r.areas === 1 ? 'área' : 'áreas'}`);
+    cargarNotas();
+  } finally { b.disabled = false; }
+});
+
+/* ---------- WhatsApp por faltas ---------- */
+const fechaCorta = f => String(f).split('-').reverse().join('/');
+const celWa = c => { c = String(c || '').replace(/\D/g, ''); return c.length === 8 ? '591' + c : c; };
+let FALTAS = [], WA_ABIERTOS = {};
+
+function abrirWa(cel, msg){ window.open('https://wa.me/' + cel + '?text=' + encodeURIComponent(msg), '_blank'); }
+
+function textoFalta(est){
+  const k = curso();
+  return (INI.waFalta || '')
+    .replace(/\{estudiante\}/g, est.nombre)
+    .replace(/\{curso\}/g, k.c + '.º ' + k.p)
+    .replace(/\{fecha\}/g, fechaCorta($('#fecha').value))
+    .replace(/\{unidad\}/g, INI.unidad || '');
+}
+
+function pintarFaltas(){
+  const f = $('#fecha').value;
+  $('#waFaltasLista').innerHTML = FALTAS.map(e => {
+    const cel = celWa(e.celular), ya = WA_ABIERTOS[f + '|' + e.id];
+    return `<div class="fila-est"><span>${esc(e.nombre)} <span class="nota">${cel ? '+' + esc(cel) : 'sin celular registrado'}</span></span>
+      <button class="btn sec" data-wa="${esc(e.id)}" ${cel ? '' : 'disabled'}>${ya ? 'Abierto ✓ · reenviar' : 'Enviar WhatsApp'}</button></div>`;
+  }).join('');
+  const conCel = FALTAS.filter(e => celWa(e.celular)).length;
+  $('#waFaltasNota').textContent = `${FALTAS.length} ${FALTAS.length === 1 ? 'falta' : 'faltas'} el ${fechaCorta(f)}` +
+    (conCel < FALTAS.length ? ` · ${FALTAS.length - conCel} sin celular` : '') +
+    '. Se abre WhatsApp con el mensaje ya escrito: solo toca «Enviar» en WhatsApp.';
+}
+
+function avisarFaltas(silencioso){
+  const k = curso();
+  FALTAS = k ? [...document.querySelectorAll('#tAsis tbody tr')]
+    .filter(tr => { const b = tr.querySelector('button.on'); return b && b.dataset.e === 'F'; })
+    .map(tr => ESTS.find(e => String(e.id) === String(tr.dataset.id)))
+    .filter(Boolean) : [];
+  $('#waFaltas').hidden = !FALTAS.length;
+  if(!FALTAS.length){ if(!silencioso) aviso('No hay faltas marcadas en esta fecha.', true); return; }
+  pintarFaltas();
+}
+
+function abrirAvisoFalta(est){
+  const cel = celWa(est.celular);
+  if(!cel) return aviso('Este estudiante no tiene celular registrado.', true);
+  abrirWa(cel, textoFalta(est));
+  WA_ABIERTOS[$('#fecha').value + '|' + est.id] = true;
+  pintarFaltas();
+}
+
+$('#btnAvisarFaltas').onclick = () => avisarFaltas(false);
+$('#waFaltasLista').addEventListener('click', e => {
+  const b = e.target.closest('button'); if(!b || !b.dataset.wa) return;
+  const est = FALTAS.find(x => String(x.id) === b.dataset.wa);
+  if(est) abrirAvisoFalta(est);
+});
+$('#btnWaSiguiente').onclick = () => {
+  const f = $('#fecha').value;
+  const est = FALTAS.find(x => celWa(x.celular) && !WA_ABIERTOS[f + '|' + x.id]);
+  if(!est) return aviso('Ya abriste el aviso de todos los estudiantes que tienen celular.');
+  abrirAvisoFalta(est);
+};
+/* ---------- Reporte de asistencia por fechas ---------- */
+let REPA = null;
+const ESTADO_TXT = { P: 'A', F: 'F', R: 'R', L: 'L', '': '' };
+
+function iniciarReporteAsistencia(){
+  if(!$('#raDesde').value){
+    const h = INI.hoy, ini = INI['trim' + INI.trimActual + '_inicio'];
+    $('#raHasta').value = h;
+    $('#raDesde').value = h.slice(0, 8) + '01';
+  }
+  $('#raTodosTxt').textContent = esAdmin() ? 'Todos los cursos' : 'Todos mis cursos';
+}
+
+async function obtenerReporteAsistencia(){
+  const k = curso();
+  const todos = $('#raTodos').checked;
+  if(!todos && !k) throw new Error('Elige un curso primero.');
+  REPA = await api('apiReporteAsistencia', k ? k.c : '', k ? k.p : '', $('#raDesde').value, $('#raHasta').value, todos);
+  return REPA;
+}
+
+function diaMes(f){ const p = f.split('-'); return p[2] + '/' + p[1]; }
+
+function htmlReporteAsistencia(r){
+  return r.cursos.map(c => {
+    const titulo = `<strong>${esc(c.curso)}.º ${esc(c.paralelo)}</strong> <span class="nota">· ${c.filas.length} estudiantes · ${c.fechas.length} fechas</span>`;
+    if(!c.fechas.length) return `<div class="tarjeta">${titulo}<p class="nota">No hay asistencia registrada en este rango de fechas.</p></div>`;
+    const h = '<tr><th class="n">N.º · Apellidos y nombres</th>' +
+      c.fechas.map(f => `<th class="vert"><span>${diaMes(f)}</span></th>`).join('') +
+      '<th class="vert sep"><span>Asistencia (A)</span></th><th class="vert"><span>Faltas (F)</span></th><th class="vert"><span>Retraso (R)</span></th><th class="vert"><span>Licencia (L)</span></th></tr>';
+    const cuerpo = c.filas.map((f, i) => `<tr><td class="n">${i + 1}. ${esc(f.nombre)}</td>` +
+      f.estados.map(s => `<td class="ea ea-${s || 'v'}">${ESTADO_TXT[s]}</td>`).join('') +
+      `<td class="sep tot">${f.A}</td><td class="${f.F ? 'rep' : ''}">${f.F}</td><td>${f.R}</td><td>${f.L}</td></tr>`).join('');
+    return `<div class="tarjeta">${titulo}<div class="tabla" style="margin-top:8px"><table class="tasis"><thead>${h}</thead><tbody>${cuerpo}</tbody></table></div></div>`;
+  }).join('');
+}
+
+$('#btnRaVer').onclick = () => seguro(async () => {
+  const b = $('#btnRaVer'); b.disabled = true;
+  try {
+    const r = await obtenerReporteAsistencia();
+    $('#raResultado').innerHTML = `<p class="nota">${esc(r.unidad)} · Control de asistencia del ${fechaCorta(r.desde)} al ${fechaCorta(r.hasta)} · A presente · F falta · R retraso · L licencia</p>` + htmlReporteAsistencia(r);
+  } finally { b.disabled = false; }
+});
+$('#btnRaImprimir').onclick = () => seguro(async () => {
+  if(!REPA) await obtenerReporteAsistencia();
+  $('#raResultado').innerHTML = htmlReporteAsistencia(REPA);
+  window.print();
+});
+
+$('#btnRaExcel').onclick = () => seguro(async () => {
+  if(typeof ExcelJS === 'undefined') throw new Error('No se pudo cargar el generador de Excel. Revisa tu conexión y recarga la página.');
+  const b = $('#btnRaExcel'); b.disabled = true;
+  try {
+    const r = await obtenerReporteAsistencia();
+    if(!r.cursos.some(c => c.fechas.length)) throw new Error('No hay asistencia registrada en ese rango de fechas.');
+    const wb = new ExcelJS.Workbook();
+    const thin = { style: 'thin', color: { argb: 'FF404040' } };
+    const BORDE = { top: thin, left: thin, bottom: thin, right: thin };
+    const fill = a => ({ type: 'pattern', pattern: 'solid', fgColor: { argb: a } });
+    const letra = n => { let s = ''; while(n > 0){ const m = (n - 1) % 26; s = String.fromCharCode(65 + m) + s; n = Math.floor((n - 1) / 26); } return s; };
+    const usados = {};
+    r.cursos.forEach(c => {
+      let nom = (c.curso + c.paralelo).replace(/[\\\/?*\[\]:]/g, '') || 'Curso', f = nom, k = 2;
+      while(usados[f.toLowerCase()]) f = nom + '_' + k++;
+      usados[f.toLowerCase()] = true;
+      const ws = wb.addWorksheet(f);
+      const nF = c.fechas.length, n = c.filas.length;
+      const cT = 3 + nF;                       // primera columna de totales
+      const ult = 5 + n;                       // última fila de estudiantes
+      ws.getColumn(1).width = 4.5; ws.getColumn(2).width = 38;
+      for(let i = 0; i < nF; i++) ws.getColumn(3 + i).width = 4.2;
+      for(let i = 0; i < 4; i++) ws.getColumn(cT + i).width = 5.5;
+
+      const celda = (rr, cc, v, o) => {
+        const x = ws.getCell(rr, cc); o = o || {};
+        x.value = v;
+        x.font = o.font || { name: 'Arial', size: 9 };
+        x.alignment = o.al || { horizontal: 'center', vertical: 'middle' };
+        if(o.fill) x.fill = o.fill;
+        if(o.borde !== false) x.border = BORDE;
+        return x;
+      };
+      const izq = { horizontal: 'left', vertical: 'middle' };
+      celda(1, 2, 'U. E.: ' + (r.unidad || ''), { borde: false, al: izq, font: { name: 'Arial', size: 10, bold: true } });
+      celda(2, 2, 'CURSO: ' + c.curso + '.º ' + c.paralelo + '   ·   GESTIÓN: ' + (r.gestion || '') + '   ·   DOCENTE: ' + r.docente +
+        '   ·   DEL ' + fechaCorta(r.desde) + ' AL ' + fechaCorta(r.hasta), { borde: false, al: izq, font: { name: 'Arial', size: 9, bold: true } });
+
+      // Fila 3: título; filas 4-5: encabezados
+      ws.mergeCells(3, 3, 3, cT - 1);
+      celda(3, 3, 'CONTROL DE ASISTENCIA', { fill: fill('FFB4C6E7'), font: { name: 'Arial', size: 10, bold: true } });
+      for(let i = 0; i < nF; i++) ws.getCell(3, 3 + i).border = BORDE;
+      ws.mergeCells(3, 1, 5, 1); celda(3, 1, 'N°', { font: { name: 'Arial', size: 8, bold: true } });
+      ws.mergeCells(3, 2, 5, 2); celda(3, 2, 'APELLIDOS Y NOMBRES', { font: { name: 'Arial', size: 9, bold: true } });
+      for(let rr = 3; rr <= 5; rr++){ ws.getCell(rr, 1).border = BORDE; ws.getCell(rr, 2).border = BORDE; }
+      ws.getRow(4).height = 46;
+      c.fechas.forEach((fe, i) => {
+        ws.mergeCells(4, 3 + i, 5, 3 + i);
+        celda(4, 3 + i, diaMes(fe), { al: { horizontal: 'center', vertical: 'middle', textRotation: 90 }, font: { name: 'Arial', size: 8 } });
+        ws.getCell(5, 3 + i).border = BORDE;
+      });
+      ['ASISTENCIA', 'FALTAS', 'RETRASO', 'LICENCIA'].forEach((t, i) => {
+        ws.mergeCells(3, cT + i, 4, cT + i);
+        celda(3, cT + i, t, { al: { horizontal: 'center', vertical: 'middle', textRotation: 90 }, font: { name: 'Arial', size: 8, bold: true }, fill: fill('FFFFF2CC') });
+        ws.getCell(4, cT + i).border = BORDE;
+        celda(5, cT + i, ['A', 'F', 'R', 'L'][i], { font: { name: 'Arial', size: 9, bold: true }, fill: fill('FFFFF2CC') });
+      });
+
+      const COL = { P: 'FFE2EFDA', F: 'FFF8CBAD', R: 'FFFFE699', L: 'FFBDD7EE' };
+      c.filas.forEach((fi, i) => {
+        const rr = 6 + i;
+        celda(rr, 1, i + 1, { font: { name: 'Arial', size: 8 } });
+        celda(rr, 2, fi.nombre, { al: izq, font: { name: 'Arial', size: 8 } });
+        fi.estados.forEach((s, j) => celda(rr, 3 + j, ESTADO_TXT[s] || null, { fill: COL[s] ? fill(COL[s]) : undefined, font: { name: 'Arial', size: 8, bold: !!s } }));
+        const rg = `${letra(3)}${rr}:${letra(cT - 1)}${rr}`;
+        [['A', fi.A], ['F', fi.F], ['R', fi.R], ['L', fi.L]].forEach((p, k) =>
+          celda(rr, cT + k, { formula: `COUNTIF(${rg},"${p[0]}")`, result: p[1] }, { font: { name: 'Arial', size: 9, bold: true } }));
+      });
+      ws.views = [{ state: 'frozen', xSplit: 2, ySplit: 5, showGridLines: false }];
+      ws.pageSetup = { orientation: 'landscape', paperSize: 9, fitToPage: true, fitToWidth: 1, fitToHeight: 0, printTitlesRow: '3:5' };
+    });
+    const buf = await wb.xlsx.writeBuffer();
+    descargarArchivo(new File([buf], ('Asistencia_' + (r.cursos.length === 1 ? r.cursos[0].curso + r.cursos[0].paralelo : 'cursos') + '_' + r.desde + '_a_' + r.hasta + '.xlsx').replace(/[^\w.-]+/g, '_'),
+      { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }));
+    aviso('Excel de asistencia descargado');
+  } finally { b.disabled = false; }
+});
+/* ---------- Kardex ---------- */
+let KARDEX = null;
+
+async function cargarKardex(){
+  const k = curso();
+  if(!$('#kFecha').value) $('#kFecha').value = INI.hoy;
+  if(!k){ $('#tKardex').innerHTML = '<tr><td class="vacio">Elige un curso.</td></tr>'; return; }
+  const r = await seguro(() => api('apiKardex', k.c, k.p));
+  if(!r) return;
+  KARDEX = r;
+  const cods = INI.asign[k.c + '|' + k.p] || [];
+  $('#kTipo').innerHTML = r.tipos.map(t => `<option>${esc(t)}</option>`).join('');
+  $('#kArea').innerHTML = '<option value="">(sin materia)</option>' +
+    INI.areas.filter(a => cods.indexOf(a.cod) >= 0).map(a => `<option value="${a.cod}">${a.cod} · ${esc(a.nombre)}</option>`).join('');
+  $('#kEsts').innerHTML = ESTS.length
+    ? ESTS.map(e => `<label class="chk"><input type="checkbox" value="${esc(e.id)}"> <span>${esc(e.nombre)}</span></label>`).join('')
+    : '<div class="vacio">Este curso no tiene estudiantes.</div>';
+  $('#kFiltroEst').innerHTML = '<option value="">Todos</option>' + ESTS.map(e => `<option value="${esc(e.id)}">${esc(e.nombre)}</option>`).join('');
+  $('#kFiltroTipo').innerHTML = '<option value="">Todos</option>' + r.tipos.map(t => `<option>${esc(t)}</option>`).join('');
+  pintarKardex();
+}
+
+function kFiltrados(){
+  if(!KARDEX) return [];
+  const fe = $('#kFiltroEst').value, ft = $('#kFiltroTipo').value;
+  return KARDEX.registros.filter(r => (!fe || r.idEst === fe) && (!ft || r.tipo === ft));
+}
+
+function pintarKardex(){
+  const t = $('#tKardex');
+  if(!KARDEX) return;
+  const nom = {}; ESTS.forEach(e => nom[String(e.id)] = e.nombre);
+  const regs = kFiltrados();
+  const cuenta = {}; regs.forEach(r => cuenta[r.tipo] = (cuenta[r.tipo] || 0) + 1);
+  $('#kResumen').textContent = regs.length
+    ? regs.length + (regs.length === 1 ? ' registro' : ' registros') + ' · ' + Object.keys(cuenta).map(k => k + ': ' + cuenta[k]).join(' · ')
+    : '';
+  if(!regs.length){ t.innerHTML = '<tr><td class="vacio">No hay registros en el Kardex con este filtro.</td></tr>'; return; }
+  t.innerHTML = '<thead><tr><th class="n">Estudiante</th><th>Fecha</th><th>Tipo</th><th>Materia</th><th>Observación</th><th>Docente</th><th></th></tr></thead><tbody>' +
+    regs.map(r => `<tr><td class="n">${esc(nom[r.idEst] || '(estudiante retirado)')}</td><td>${fechaCorta(r.fecha)}</td>
+      <td style="text-align:left">${esc(r.tipo)}</td><td>${esc(r.area)}</td>
+      <td style="white-space:normal;text-align:left;min-width:180px">${esc(r.detalle)}</td><td>${esc(r.docente)}</td>
+      <td>${nom[r.idEst] ? `<button class="mini" data-kwa="${esc(r.id)}">WhatsApp</button> ` : ''}${(esAdmin() || r.usuario === INI.usuario.usuario) ? `<button class="mini x" data-kdel="${esc(r.id)}" aria-label="Eliminar registro">×</button>` : ''}</td></tr>`).join('') +
+    '</tbody>';
+}
+
+$('#kFiltroEst').onchange = $('#kFiltroTipo').onchange = pintarKardex;
+
+$('#btnKGuardar').onclick = () => seguro(async () => {
+  const k = curso(); if(!k) return;
+  const ids = [...document.querySelectorAll('#kEsts input:checked')].map(i => i.value);
+  if(!ids.length) return aviso('Marca al menos un estudiante.', true);
+  const b = $('#btnKGuardar'); b.disabled = true;
+  try {
+    const r = await api('apiGuardarKardex', k.c, k.p, {
+      fecha: $('#kFecha').value, ids: ids, tipo: $('#kTipo').value, area: $('#kArea').value, detalle: $('#kDetalle').value });
+    $('#kDetalle').value = '';
+    aviso('Registrado en el Kardex: ' + r.guardados + (r.guardados === 1 ? ' estudiante' : ' estudiantes'));
+    await cargarKardex();
+  } finally { b.disabled = false; }
+});
+
+$('#tKardex').addEventListener('click', e => {
+  const b = e.target.closest('button'); if(!b) return;
+  if(b.dataset.kdel){
+    if(!confirm('¿Eliminar este registro del Kardex?')) return;
+    seguro(async () => { await api('apiEliminarKardex', b.dataset.kdel); aviso('Registro eliminado'); await cargarKardex(); });
+  } else if(b.dataset.kwa){
+    const r = KARDEX.registros.find(x => x.id === b.dataset.kwa); if(!r) return;
+    const est = ESTS.find(x => String(x.id) === r.idEst), cel = est && celWa(est.celular), k = curso();
+    if(!cel) return aviso('Este estudiante no tiene celular registrado.', true);
+    abrirWa(cel, `Estimado padre/madre de familia: en el Kardex de ${est.nombre} (${k.c}.º ${k.p}) se registró «${r.tipo}» el ${fechaCorta(r.fecha)}.${r.detalle ? ' ' + r.detalle : ''} — ${INI.unidad || ''}`);
+  }
+});
+
+$('#btnKExcel').onclick = () => {
+  const regs = kFiltrados();
+  if(!regs.length) return aviso('No hay registros para exportar.', true);
+  if(typeof XLSX === 'undefined') return aviso('No se pudo cargar el generador de Excel. Revisa tu conexión y recarga la página.', true);
+  const k = curso(), nom = {}; ESTS.forEach(e => nom[String(e.id)] = e.nombre);
+  const filas = [['Fecha', 'Estudiante', 'Tipo', 'Materia', 'Observación', 'Docente']].concat(
+    regs.map(r => [fechaCorta(r.fecha), nom[r.idEst] || '', r.tipo, r.area ? nomArea(r.area) : '', r.detalle, r.docente]));
+  const ws = XLSX.utils.aoa_to_sheet(filas);
+  ws['!cols'] = [{ wch: 11 }, { wch: 34 }, { wch: 22 }, { wch: 26 }, { wch: 50 }, { wch: 26 }];
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'Kardex');
+  const bytes = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+  descargarArchivo(new File([bytes], ('Kardex_' + k.c + k.p + '_' + INI.gestion + '.xlsx').replace(/[^\w.-]+/g, '_'),
+    { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }));
+  aviso('Excel del Kardex descargado');
+};
+
+/* ---------- Boletín ---------- */
+$('#selEst').onchange = () => seguro(async () => {
+  const id = $('#selEst').value; if(!id){ BOL = null; return; }
+  BOL = await api('apiBoletin', id);
+  const e = BOL.estudiante;
+  const general = esAdmin()
+    ? `<div class="general ${clase(BOL.general)}" style="margin-top:8px">${BOL.general ?? '—'}</div><span class="nota">Promedio general</span>`
+    : '<span class="nota">Notas de las áreas que regentas</span>';
+  $('#boletin').innerHTML = `
+    <div class="tarjeta"><strong>${esc(e.nombre)}</strong><br><span class="nota">${esc(e.curso)}.º ${esc(e.paralelo)} · Gestión ${esc(BOL.gestion)}</span>
+      ${general}</div>
+    <div class="tabla"><table><thead><tr><th class="n">Área</th><th>1.º</th><th>2.º</th><th>3.º</th><th>Anual</th></tr></thead><tbody>` +
+    BOL.filas.map(f => `<tr><td class="n">${esc(nomArea(f.area))} <span class="nota">${esc(f.area)}</span></td><td>${f.t1 ?? ''}</td><td>${f.t2 ?? ''}</td><td>${f.t3 ?? ''}</td><td class="tot ${clase(f.promedio)}">${f.promedio ?? ''}</td></tr>`).join('') +
+    `</tbody></table></div>
+    <p class="nota">Asistencia: ${BOL.asistencia.P} presentes · ${BOL.asistencia.F} faltas · ${BOL.asistencia.L} licencias · ${BOL.asistencia.R} retrasos</p>`;
+});
+$('#btnImprimir').onclick = () => window.print();
+$('#btnWa').onclick = () => {
+  if(!BOL) return aviso('Elige un estudiante primero.', true);
+  let cel = (BOL.estudiante.celular || '').replace(/\D/g, '');
+  if(!cel) return aviso('Este estudiante no tiene celular registrado.', true);
+  if(cel.length === 8) cel = '591' + cel;
+  const lineas = BOL.filas.filter(f => f.promedio !== null).map(f => `• ${nomArea(f.area)}: ${f.promedio}`).join('\n');
+  const gen = BOL.general !== null ? `Promedio general: ${BOL.general}.\n` : '';
+  const msg = `Señor Padre/Madre de familia: boletín de ${BOL.estudiante.nombre} (${BOL.estudiante.curso}.º ${BOL.estudiante.paralelo}), gestión ${BOL.gestion}.\n${lineas}\n${gen}Faltas: ${BOL.asistencia.F}. — ${BOL.unidad}`;
+  window.open('https://wa.me/' + cel + '?text=' + encodeURIComponent(msg), '_blank');
+};
+
+/* ---------- Boletín: todas las calificaciones del curso ---------- */
+function areasConDatos(b){
+  const con = b.areas.filter(a => b.filas.some(f => f.areas.some(x => x.area === a.cod && (x.t1 !== null || x.t2 !== null || x.t3 !== null))));
+  return con.length ? con : b.areas;
+}
+async function cargarTodas(){
+  const k = curso(); if(!k) throw new Error('Elige un curso primero.');
+  BOLC = await api('apiBoletinCurso', k.c, k.p);
+  if(!BOLC.filas.length) throw new Error('Este curso no tiene estudiantes.');
+  return BOLC;
+}
+function renderTodas(b){
+  const ars = areasConDatos(b);
+  const h1 = '<tr><th class="n" rowspan="2">Estudiante</th>' +
+    ars.map(a => `<th class="grupo" colspan="4" title="${esc(a.nombre)}">${esc(a.cod)} <span class="nota">${esc(a.nombre)}</span></th>`).join('') +
+    (b.muestraGeneral ? '<th class="sep" rowspan="2">General</th>' : '') + '</tr>';
+  const h2 = '<tr>' + ars.map(() => '<th class="sep">1.º</th><th>2.º</th><th>3.º</th><th>Anual</th>').join('') + '</tr>';
+  const cuerpo = b.filas.map((f, i) => {
+    let tds = `<td class="n">${i + 1}. ${esc(f.nombre)}</td>`;
+    ars.forEach(a => {
+      const x = f.areas.find(y => y.area === a.cod) || {};
+      tds += `<td class="sep ${clase(x.t1)}">${x.t1 ?? ''}</td><td class="${clase(x.t2)}">${x.t2 ?? ''}</td><td class="${clase(x.t3)}">${x.t3 ?? ''}</td><td class="tot ${clase(x.promedio)}">${x.promedio ?? ''}</td>`;
+    });
+    if(b.muestraGeneral) tds += `<td class="sep tot ${clase(f.general)}">${f.general ?? ''}</td>`;
+    return `<tr>${tds}</tr>`;
+  }).join('');
+  $('#boletin').innerHTML = `
+    <div class="tarjeta"><strong>${esc(b.unidad)}</strong><br>
+      <span class="nota">Calificaciones del curso ${esc(b.curso)}.º ${esc(b.paralelo)} · Gestión ${esc(b.gestion)} · aprueba con ${b.notaMinima}</span></div>
+    <div class="tabla"><table id="tTodas"><thead>${h1}${h2}</thead><tbody>${cuerpo}</tbody></table></div>`;
+}
+$('#btnTodas').onclick = () => seguro(async () => {
+  const b = $('#btnTodas'); b.disabled = true;
+  try { renderTodas(await cargarTodas()); $('#selEst').value = ''; BOL = null; }
+  finally { b.disabled = false; }
+});
+
+function nombreXlsx(b){ return `Calificaciones_${b.curso}${b.paralelo}_${b.gestion}.xlsx`.replace(/[^\w.-]+/g, '_'); }
+
+function construirXlsx(b){
+  if(typeof XLSX === 'undefined') throw new Error('No se pudo cargar el generador de Excel. Revisa tu conexión a internet y recarga la página.');
+  const ars = areasConDatos(b);
+  const r0 = ['Estudiante'], r1 = [''], merges = [{ s:{r:0,c:0}, e:{r:1,c:0} }];
+  ars.forEach((a, i) => {
+    const c = 1 + i * 4;
+    r0.push(a.cod + ' · ' + a.nombre, '', '', ''); r1.push('1.º', '2.º', '3.º', 'Anual');
+    merges.push({ s:{r:0,c:c}, e:{r:0,c:c + 3} });
+  });
+  if(b.muestraGeneral){ r0.push('General'); r1.push(''); merges.push({ s:{r:0,c:1 + ars.length * 4}, e:{r:1,c:1 + ars.length * 4} }); }
+  const datos = b.filas.map(f => {
+    const fila = [f.nombre];
+    ars.forEach(a => {
+      const x = f.areas.find(y => y.area === a.cod) || {};
+      [x.t1, x.t2, x.t3, x.promedio].forEach(v => fila.push(v === null || v === undefined ? '' : v));
+    });
+    if(b.muestraGeneral) fila.push(f.general === null ? '' : f.general);
+    return fila;
+  });
+  const ws = XLSX.utils.aoa_to_sheet([r0, r1, ...datos]);
+  ws['!merges'] = merges;
+  ws['!cols'] = [{ wch: 34 }].concat(Array(r0.length - 1).fill({ wch: 8 }));
+  ws['!freeze'] = { xSplit: 1, ySplit: 2 };
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, ('Curso ' + b.curso + b.paralelo).slice(0, 31));
+  const bytes = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+  return new File([bytes], nombreXlsx(b), { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+}
+
+function descargarArchivo(file){
+  const url = URL.createObjectURL(file);
+  const a = document.createElement('a');
+  a.href = url; a.download = file.name; document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 10000);
+}
+
+function numeroWa(){
+  let cel = ($('#waDestino').value || '').replace(/\D/g, '');
+  if(cel.length === 8) cel = '591' + cel;
+  return cel;
+}
+
+$('#btnExcelWa').onclick = () => seguro(async () => {
+  const cel = numeroWa();
+  if(cel.length < 10) return aviso('Escribe el número de WhatsApp de destino (8 dígitos, o con código de país).', true);
+  const b = $('#btnExcelWa'); b.disabled = true;
+  try {
+    const datos = await cargarTodas();
+    renderTodas(datos);
+    XLSX_FILE = construirXlsx(datos);
+    descargarArchivo(XLSX_FILE);
+    $('#waTitulo').textContent = 'Archivo generado: ' + XLSX_FILE.name;
+    $('#waNota').textContent = 'Se descargó el Excel. WhatsApp no permite adjuntar archivos automáticamente desde una página web: pulsa «Abrir WhatsApp» (chat con +' + cel + ') y adjunta el archivo descargado con el clip. En un celular también puedes usar «Compartir el archivo».';
+    $('#btnWaCompartir').hidden = !(navigator.canShare && navigator.canShare({ files: [XLSX_FILE] }));
+    $('#waCard').hidden = false;
+    aviso('Excel generado y descargado');
+  } finally { b.disabled = false; }
+});
+$('#btnWaAbrir').onclick = () => {
+  const cel = numeroWa();
+  if(cel.length < 10) return aviso('Escribe el número de WhatsApp de destino.', true);
+  const msg = 'Calificaciones del curso ' + (BOLC ? BOLC.curso + '.º ' + BOLC.paralelo + ' · gestión ' + BOLC.gestion : '') + '. Te envío el archivo Excel adjunto.';
+  window.open('https://wa.me/' + cel + '?text=' + encodeURIComponent(msg), '_blank');
+};
+$('#btnWaCompartir').onclick = () => seguro(async () => {
+  if(!XLSX_FILE) return;
+  try { await navigator.share({ files: [XLSX_FILE], title: XLSX_FILE.name }); }
+  catch(e){ if(e.name !== 'AbortError') throw new Error('Tu navegador no permitió compartir el archivo. Usa «Abrir WhatsApp» y adjúntalo manualmente.'); }
+});
+$('#btnWaDescargar').onclick = () => { if(XLSX_FILE) descargarArchivo(XLSX_FILE); };
+
+/* ---------- Libreta escolar (administrador) ---------- */
+const ORDINAL = ['', 'PRIMERO', 'SEGUNDO', 'TERCERO', 'CUARTO', 'QUINTO', 'SEXTO'];
+
+function htmlLibreta(h, L){
+  const e = L.estudiante;
+  const grado = (ORDINAL[Number(e.curso)] || e.curso + '.º') + ' - ' + e.paralelo;
+  const nivel = 'Educación ' + String(h.nivel || 'Secundaria Comunitaria Productiva').toLowerCase().replace(/(^|\s)\S/g, m => m.toUpperCase());
+  const cuenta = {}; L.filas.forEach(f => cuenta[f.campo] = (cuenta[f.campo] || 0) + 1);
+  const v = x => (x === null || x === undefined || x === '') ? '-' : x;
+  let prev = '';
+  const filas = L.filas.map(f => {
+    const campo = f.campo !== prev ? `<td class="l" rowspan="${cuenta[f.campo]}">${esc(f.campo)}</td>` : '';
+    prev = f.campo;
+    return `<tr>${campo}<td class="l">${esc(f.nombre)}</td><td class="num">${v(f.t1)}</td><td class="num">${v(f.t2)}</td><td class="num">${v(f.t3)}</td><td class="num">${v(f.anual)}</td><td>${esc(f.literal)}</td></tr>`;
+  }).join('');
+  const hoy = new Date(), p2 = n => String(n).padStart(2, '0');
+  const fecha = `${p2(hoy.getDate())}/${p2(hoy.getMonth() + 1)}/${hoy.getFullYear()} ${p2(hoy.getHours())}:${p2(hoy.getMinutes())}:${p2(hoy.getSeconds())}`;
+  return `<div class="lib">
+    <div class="lcab">
+      <div class="izq">Estado Plurinacional de Bolivia<br>Ministerio de Educación</div>
+      <div class="lcen">
+        <h2>Libreta Escolar Electrónica</h2><h3>${esc(nivel)}</h3>
+        <div class="datos">
+          <span><b>Unidad Educativa:</b> ${esc(h.sie)}${h.sie ? ' - ' : ''}${esc(h.unidad)}</span><span><b>Departamento:</b> ${esc(h.departamento)}</span>
+          <span><b>Distrito Educativo:</b> ${esc(h.distrito)}</span><span><b>Dependencia:</b> ${esc(h.dependencia)}</span>
+          <span><b>Turno:</b> ${esc(h.turno)}</span><span><b>Gestión:</b> ${esc(h.gestion)}</span>
+        </div>
+      </div>
+      <div>
+        <table class="rango"><tr><td colspan="3" style="text-align:center">Rango de Valoración de las Dimensiones</td></tr>
+          <tr><td>En desarrollo</td><td>ED</td><td>Hasta 50</td></tr>
+          <tr><td>Desarrollo aceptable</td><td>DA</td><td>51 - 68</td></tr>
+          <tr><td>Desarrollo óptimo</td><td>DO</td><td>69 - 84</td></tr>
+          <tr><td>Desarrollo pleno</td><td>DP</td><td>85 - 100</td></tr></table>
+        <div style="text-align:right;font:700 6.5pt Arial">${esc(h.idioma)}</div>
+      </div>
+    </div>
+    <div class="est"><span><b>Código Rude:</b> ${esc(e.rude)}</span><span><b>Apellidos y Nombres:</b> ${esc(e.nombre)}</span><span><b>Año de Escolaridad:</b> ${esc(grado)}</span></div>
+    <table>
+      <colgroup><col style="width:105px"><col><col style="width:50px"><col style="width:50px"><col style="width:50px"><col style="width:52px"><col style="width:44px"></colgroup>
+      <thead>
+        <tr><th colspan="7" class="tit">Evaluación (Ser, Saber, Hacer y Decidir)</th></tr>
+        <tr><th rowspan="3">Campos de Saberes y Conocimientos</th><th rowspan="3">Áreas Curriculares</th><th colspan="5">Valoración Cuantitativa</th></tr>
+        <tr><th rowspan="2">1er. Trim.</th><th rowspan="2">2do. Trim.</th><th rowspan="2">3er. Trim.</th><th colspan="2">Promedio Anual</th></tr>
+        <tr><th>Numeral</th><th>Literal</th></tr>
+      </thead>
+      <tbody>${filas}</tbody>
+    </table>
+    <p class="tit" style="margin:3px 0 0">Informe de Promoción:</p>
+    <div class="firmas"><span>Maestra/Maestro<br>Firma</span><span>Unidad Educativa<br>Sello</span><span>Directora/Director Unidad Educativa<br>Firma</span></div>
+    <div class="nota-pie"><b>Nota:</b> Para trámites administrativos, la Directora o el Director Distrital de Educación y la Directora o el Director Departamental de Educación deberán firmar y sellar al reverso del presente documento.</div>
+    <div class="nota-pie" style="display:flex;justify-content:space-between;margin-top:3px"><span>${esc(h.modalidad)}</span><span>Fecha de Impresión: ${fecha}</span></div>
+  </div>`;
+}
+
+/** Agrupa las libretas de a 2 por hoja carta (vertical). */
+function paginasLibretas(r){
+  const out = [];
+  for(let i = 0; i < r.libretas.length; i += 2){
+    const a = r.libretas[i], b = r.libretas[i + 1];
+    out.push(`<div class="pag-lib"><div class="mitad m1">${htmlLibreta(r.cabecera, a)}</div><div class="mitad m2">${b ? htmlLibreta(r.cabecera, b) : ''}</div></div>`);
+  }
+  return out.join('');
+}
+
+/** Si una libreta no cabe en su mitad de hoja, la reduce lo justo. */
+function ajustarLibretas(root){
+  root.querySelectorAll('.mitad').forEach(m => {
+    const l = m.querySelector('.lib'); if(!l) return;
+    l.style.transform = ''; l.style.width = '';
+    const disp = m.clientHeight - 8, h = l.scrollHeight;
+    if(h > disp){
+      const f = disp / h;
+      l.style.width = (100 / f) + '%';
+      l.style.transform = 'scale(' + f + ')';
+      l.style.transformOrigin = 'top left';
+    }
+  });
+}
+
+async function datosLibretas(idEst){
+  const k = curso(); if(!k) throw new Error('Elige un curso primero.');
+  const r = await api('apiLibretas', k.c, k.p, idEst || '');
+  if(!r.libretas.length) throw new Error('No hay estudiantes para generar la libreta.');
+  r.k = k;
+  return r;
+}
+
+async function imprimirLibretas(idEst){
+  const r = await datosLibretas(idEst);
+  const imp = $('#libretaImp');
+  imp.innerHTML = paginasLibretas(r);
+  imp.style.cssText = 'display:block;position:absolute;left:-9999px;top:0';   // visible fuera de pantalla para medir
+  ajustarLibretas(imp);
+  imp.style.cssText = '';
+  const st = document.createElement('style');
+  st.id = 'pgLibreta'; st.textContent = '@page{size:letter portrait;margin:0}';
+  document.head.appendChild(st);
+  document.body.classList.add('imp-libreta');
+  const limpiar = () => {
+    document.body.classList.remove('imp-libreta');
+    const s = document.getElementById('pgLibreta'); if(s) s.remove();
+    imp.innerHTML = '';
+    window.removeEventListener('afterprint', limpiar);
+  };
+  window.addEventListener('afterprint', limpiar);
+  setTimeout(() => window.print(), 150);
+}
+
+async function pdfLibretas(idEst){
+  if(typeof html2canvas === 'undefined' || !(window.jspdf && window.jspdf.jsPDF))
+    throw new Error('No se pudo cargar el generador de PDF. Revisa tu conexión a internet y recarga la página.');
+  const r = await datosLibretas(idEst);
+  const cont = $('#libretaPdf'), ov = $('#pdfOverlay'), msg = $('#pdfMsg');
+  cont.innerHTML = paginasLibretas(r);
+  ajustarLibretas(cont);
+  window.scrollTo(0, 0);
+  ov.style.display = 'flex'; msg.textContent = 'Generando PDF…';
+  try {
+    await new Promise(ok => setTimeout(ok, 150));
+    const pdf = new window.jspdf.jsPDF({ unit: 'mm', format: 'letter', orientation: 'portrait' });
+    const pags = [...cont.querySelectorAll('.pag-lib')];
+    for(let i = 0; i < pags.length; i++){
+      msg.textContent = 'Generando PDF… hoja ' + (i + 1) + ' de ' + pags.length;
+      const canvas = await html2canvas(pags[i], {
+        scale: 2, backgroundColor: '#ffffff', useCORS: true,
+        windowWidth: 816, windowHeight: 1050, scrollX: 0, scrollY: 0,
+        onclone: doc => { doc.documentElement.style.overflow = 'visible'; doc.body.style.overflow = 'visible'; }
+      });
+      if(i) pdf.addPage();
+      pdf.addImage(canvas.toDataURL('image/jpeg', 0.95), 'JPEG', 0, 0, 215.9, 215.9 * 1050 / 816);
+      await new Promise(ok => setTimeout(ok, 0));
+    }
+    const nombre = idEst
+      ? 'Libreta_' + r.libretas[0].estudiante.nombre
+      : 'Libretas_' + r.k.c + r.k.p + '_' + r.cabecera.gestion;
+    pdf.save(nombre.replace(/[^\w.-]+/g, '_') + '.pdf');
+    aviso('PDF descargado: ' + r.libretas.length + (r.libretas.length === 1 ? ' libreta' : ' libretas') + ' en ' + pags.length + (pags.length === 1 ? ' hoja' : ' hojas'));
+  } finally {
+    ov.style.display = 'none';
+    cont.innerHTML = '';
+  }
+}
+
+function conBoton(sel, fn){
+  return () => seguro(async () => {
+    const b = $(sel); b.disabled = true;
+    try { await fn(); } finally { b.disabled = false; }
+  });
+}
+$('#btnLibreta').onclick = conBoton('#btnLibreta', async () => {
+  const id = $('#selEst').value;
+  if(!id) return aviso('Elige un estudiante en la lista «Estudiante».', true);
+  await imprimirLibretas(id);
+});
+$('#btnLibretasCurso').onclick = conBoton('#btnLibretasCurso', () => imprimirLibretas(''));
+$('#btnLibretaPdf').onclick = conBoton('#btnLibretaPdf', async () => {
+  const id = $('#selEst').value;
+  if(!id) return aviso('Elige un estudiante en la lista «Estudiante».', true);
+  await pdfLibretas(id);
+});
+$('#btnLibretasPdf').onclick = conBoton('#btnLibretasPdf', () => pdfLibretas(''));
+
+/* ---------- Boletín centralizador (administrador) ---------- */
+async function cargarCentral(){
+  const r = await seguro(() => api('apiCentralizadorGeneral'));
+  if(!r) return;
+  CEN = r;
+  const sel = $('#cenCurso'), previo = sel.value;
+  sel.innerHTML = '<option value="*">Todos los cursos</option>' +
+    r.cursos.map(c => `<option value="${esc(c.curso)}|${esc(c.paralelo)}">${esc(c.curso)}.º ${esc(c.paralelo)}</option>`).join('');
+  if(previo && [...sel.options].some(o => o.value === previo)) sel.value = previo;
+  pintarCentral();
+}
+function pintarCentral(){
+  if(!CEN) return;
+  const sel = $('#cenCurso').value;
+  const cursos = CEN.cursos.filter(c => sel === '*' || (c.curso + '|' + c.paralelo) === sel);
+  const resumen = CEN.resumen.filter(r => sel === '*' || (r.curso + '|' + r.paralelo) === sel);
+  $('#cenNota').textContent = `Se carga sola cada vez que un docente guarda notas (se revisa cada minuto; última lectura ${CEN.actualizado}) y queda guardado en la hoja «Centralizador» de Google Sheets. Cada celda es la nota anual de la materia; pasa el cursor para ver los trimestres. Aprueba con ${CEN.notaMinima}.`;
+  $('#cenResumen').innerHTML = resumen.length
+    ? `<div class="tarjeta"><strong>Resumen por docente y materia</strong><div class="tabla" style="margin-top:8px"><table><thead><tr>
+        <th class="n">Docente</th><th>Curso</th><th>Materia</th><th>Calificados</th><th>Promedio</th><th>Aprobados</th><th>Reprobados</th></tr></thead><tbody>` +
+      resumen.map(r => `<tr><td class="n">${esc(r.docente)}</td><td>${esc(r.curso)}.º ${esc(r.paralelo)}</td>
+        <td style="text-align:left">${esc(r.cod)} · ${esc(r.nombre)}</td><td>${r.calificados}</td>
+        <td class="tot ${clase(r.promedio)}">${r.promedio ?? ''}</td><td>${r.aprobados}</td><td class="${r.reprobados ? 'rep' : ''}">${r.reprobados}</td></tr>`).join('') +
+      '</tbody></table></div></div>'
+    : '<div class="tarjeta vacio">Todavía no hay calificaciones cargadas. Aparecerán aquí apenas los docentes guarden notas.</div>';
+  $('#cenTablas').innerHTML = cursos.map(c => {
+    const titulo = `<strong>${esc(c.curso)}.º ${esc(c.paralelo)}</strong>`;
+    if(!c.areas.length) return `<div class="tarjeta">${titulo}<p class="nota">Sin calificaciones todavía.</p></div>`;
+    const h1 = '<tr><th class="n" rowspan="2">Estudiante</th>' + c.areas.map(a => `<th title="${esc(a.nombre)}">${esc(a.cod)}</th>`).join('') + '<th class="sep" rowspan="2">General</th></tr>';
+    const h2 = '<tr>' + c.areas.map(a => `<th style="font-weight:400;white-space:normal;min-width:90px">${esc(a.docente)}</th>`).join('') + '</tr>';
+    const cuerpo = c.filas.map((f, i) => `<tr><td class="n">${i + 1}. ${esc(f.nombre)}</td>` +
+      c.areas.map(a => {
+        const x = f.notas[a.cod];
+        return x && x.anual !== null
+          ? `<td class="tot ${clase(x.anual)}" title="1.º ${x.t1 ?? '—'} · 2.º ${x.t2 ?? '—'} · 3.º ${x.t3 ?? '—'}">${x.anual}</td>` : '<td></td>';
+      }).join('') + `<td class="sep tot ${clase(f.general)}">${f.general ?? ''}</td></tr>`).join('');
+    return `<div class="tarjeta">${titulo}<div class="tabla" style="margin-top:8px"><table class="cen"><thead>${h1}${h2}</thead><tbody>${cuerpo}</tbody></table></div></div>`;
+  }).join('');
+}
+$('#cenCurso').onchange = pintarCentral;
+$('#btnCenActualizar').onclick = () => cargarCentral();
+$('#btnCenImprimir').onclick = () => window.print();
+$('#btnCenExcel').onclick = () => {
+  if(!CEN || !CEN.cursos.length) return aviso('No hay calificaciones para exportar.', true);
+  if(typeof XLSX === 'undefined') return aviso('No se pudo cargar el generador de Excel. Revisa tu conexión a internet y recarga la página.', true);
+  const wb = XLSX.utils.book_new();
+  const res = [['Curso', 'Materia', 'Docente', 'Calificados', 'Promedio', 'Aprobados', 'Reprobados']].concat(
+    CEN.resumen.map(r => [r.curso + '.º ' + r.paralelo, r.cod + ' · ' + r.nombre, r.docente, r.calificados, r.promedio ?? '', r.aprobados, r.reprobados]));
+  const w1 = XLSX.utils.aoa_to_sheet(res);
+  w1['!cols'] = [{ wch: 10 }, { wch: 34 }, { wch: 30 }, { wch: 12 }, { wch: 10 }, { wch: 11 }, { wch: 11 }];
+  XLSX.utils.book_append_sheet(wb, w1, 'Resumen docentes');
+  CEN.cursos.forEach(c => {
+    const filas = [['Estudiante'].concat(c.areas.map(a => a.cod + ' · ' + a.nombre), ['General']),
+                   ['Docente'].concat(c.areas.map(a => a.docente), [''])]
+      .concat(c.filas.map(f => [f.nombre].concat(
+        c.areas.map(a => { const x = f.notas[a.cod]; return x && x.anual !== null ? x.anual : ''; }),
+        [f.general === null ? '' : f.general])));
+    const ws = XLSX.utils.aoa_to_sheet(filas);
+    ws['!cols'] = [{ wch: 34 }].concat(Array(c.areas.length + 1).fill({ wch: 14 }));
+    XLSX.utils.book_append_sheet(wb, ws, ((c.curso + c.paralelo).replace(/[\\\/?*\[\]:]/g, '') || 'Curso').slice(0, 31));
+  });
+  const bytes = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+  descargarArchivo(new File([bytes], ('Centralizador_' + CEN.gestion + '.xlsx').replace(/[^\w.-]+/g, '_'),
+    { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }));
+  aviso('Excel del centralizador descargado');
+};
+
+/* ---------- Centralizador Global (administrador) ---------- */
+let GLO = null;
+const mediaG = a => a.length ? a.reduce((s, x) => s + x, 0) / a.length : null;
+const dec1 = x => x === null || x === undefined ? '' : (Math.round(x * 10) / 10).toFixed(1);
+const letraCol = n => { let s = ''; while(n > 0){ const m = (n - 1) % 26; s = String.fromCharCode(65 + m) + s; n = Math.floor((n - 1) / 26); } return s; };
+
+/** Promedios por estudiante (P1,P2,P3,PA y reprobadas R1,R2,R3,RA), pie del curso y mejores promedios. */
+function statsGlobal(c, min){
+  const filas = c.filas.map(f => {
+    const v = [[], [], [], []];
+    c.areas.forEach(a => {
+      const n = f.notas[a.cod]; if(!n) return;
+      [n.t1, n.t2, n.t3, n.anual].forEach((x, k) => { if(x !== null && x !== undefined) v[k].push(x); });
+    });
+    return { f: f, p: v.map(mediaG), r: v.map(l => l.filter(x => x < min).length) };
+  });
+  const pie = c.areas.map(a => [0, 1, 2, 3].map(k => {
+    const l = filas.map(x => x.f.notas[a.cod]).filter(Boolean).map(n => [n.t1, n.t2, n.t3, n.anual][k]).filter(x => x !== null && x !== undefined);
+    return { prom: mediaG(l), rep: l.filter(x => x < min).length };
+  }));
+  const pieP = [0, 1, 2, 3].map(k => mediaG(filas.map(x => x.p[k]).filter(x => x !== null)));
+  const pieR = [0, 1, 2, 3].map(k => filas.reduce((s, x) => s + x.r[k], 0));
+  const top = filas.map((x, i) => ({ x: x, clave: x.p[3] === null ? null : x.p[3] + (filas.length - i) * 0.00001 }))
+    .filter(t => t.clave !== null).sort((a, b) => b.clave - a.clave).slice(0, 10);
+  return { filas: filas, pie: pie, pieP: pieP, pieR: pieR, top: top };
+}
+
+async function cargarGlobal(reconstruir){
+  const r = await seguro(() => api('apiCentralizadorGlobal', !!reconstruir));
+  if(!r) return;
+  GLO = r;
+  const sel = $('#gloCurso'), previo = sel.value;
+  sel.innerHTML = '<option value="*">Todos los cursos</option>' +
+    r.cursos.map((c, i) => `<option value="${i}">${esc(c.curso)}.º ${esc(c.paralelo)}</option>`).join('');
+  if(previo && [...sel.options].some(o => o.value === previo)) sel.value = previo;
+  if(reconstruir) aviso('Centralizador Global actualizado');
+  pintarGlobal();
+}
+
+function htmlCursoGlobal(c){
+  const S = statsGlobal(c, GLO.notaMinima);
+  const cab = ['P1', 'R1', 'P2', 'R2', 'P3', 'R3', 'PA', 'RA'];
+  const h1 = '<tr><th class="n" rowspan="2">Estudiante</th>' +
+    c.areas.map(a => `<th class="grupo" colspan="4" title="${esc(a.nombre)}">${esc(a.cod)}<br><span class="nota">${esc(a.docente)}</span></th>`).join('') +
+    cab.map(t => `<th class="grupo" rowspan="2">${t}</th>`).join('') + '</tr>';
+  const h2 = '<tr>' + c.areas.map(() => '<th class="sep">1T</th><th>2T</th><th>3T</th><th>PA</th>').join('') + '</tr>';
+  const cuerpo = S.filas.map((x, i) => {
+    const celdas = c.areas.map(a => {
+      const n = x.f.notas[a.cod] || { t1: null, t2: null, t3: null, anual: null };
+      return `<td class="sep ${clase(n.t1)}">${n.t1 ?? ''}</td><td class="${clase(n.t2)}">${n.t2 ?? ''}</td><td class="${clase(n.t3)}">${n.t3 ?? ''}</td><td class="tot ${clase(n.anual)}">${n.anual ?? ''}</td>`;
+    }).join('');
+    const pr = [0, 1, 2, 3].map(k => `<td class="${k === 0 ? 'sep ' : ''}tot ${clase(x.p[k])}">${dec1(x.p[k])}</td><td class="${x.r[k] ? 'rep' : ''}">${x.r[k] || ''}</td>`).join('');
+    return `<tr><td class="n">${i + 1}. ${esc(x.f.nombre)}</td>${celdas}${pr}</tr>`;
+  }).join('');
+  const pieA = c.areas.map((a, i) => S.pie[i].map((p, k) => `<td class="${k === 0 ? 'sep ' : ''}${clase(p.prom)}">${dec1(p.prom)}</td>`).join('')).join('');
+  const pieB = c.areas.map((a, i) => S.pie[i].map((p, k) => `<td class="${k === 0 ? 'sep ' : ''}${p.rep ? 'rep' : ''}">${p.rep || ''}</td>`).join('')).join('');
+  const pieP = [0, 1, 2, 3].map(k => `<td class="${k === 0 ? 'sep ' : ''}">${dec1(S.pieP[k])}</td><td>${S.pieR[k] || ''}</td>`).join('');
+  const pie = `<tr style="font-weight:700;background:#F7F8FA"><td class="n">PROMEDIO</td>${pieA}${pieP}</tr>` +
+              `<tr style="font-weight:700;background:#F7F8FA"><td class="n">REPROBADOS</td>${pieB}<td colspan="8"></td></tr>`;
+  const top = S.top.length
+    ? `<p class="nota" style="margin:10px 2px 0"><strong>Mejores promedios:</strong> ` +
+      S.top.map((t, i) => `${i + 1}. ${esc(t.x.f.nombre)} (${dec1(t.x.p[3])})`).join(' · ') + '</p>' : '';
+  return `<div class="tarjeta"><strong style="font-size:1.1rem">${esc(c.curso)}.º ${esc(c.paralelo)}</strong>
+    <span class="nota"> · ${c.filas.length} estudiantes · ${c.areas.length} áreas</span>
+    <div class="tabla" style="margin-top:8px"><table class="cen glo"><thead>${h1}${h2}</thead><tbody>${cuerpo}${pie}</tbody></table></div>${top}</div>`;
+}
+
+function fijarCabecerasGlobal(){
+  document.querySelectorAll('#gloContenido table.glo').forEach(t => {
+    let top = 0;
+    t.querySelectorAll('thead tr').forEach(tr => {
+      tr.querySelectorAll('th').forEach(th => th.style.top = top + 'px');
+      top += tr.offsetHeight;
+    });
+  });
+}
+
+function pintarGlobal(){
+  if(!GLO) return;
+  const sel = $('#gloCurso').value;
+  const lista = GLO.cursos.filter((c, i) => sel === '*' || String(i) === sel);
+  $('#gloNota').textContent = `Notas finales de los 3 trimestres de todas las áreas, con el docente de cada área (PA = promedio anual, P = promedio, R = áreas reprobadas con menos de ${GLO.notaMinima}). Última lectura: ${GLO.actualizado}. Si faltan datos, pulsa «Actualizar ahora».`;
+  if(!lista.length){
+    $('#gloContenido').innerHTML = '<div class="tarjeta vacio">Todavía no hay estudiantes ni calificaciones cargadas.</div>';
+    return;
+  }
+  const obs = !GLO.observaciones.length ? '' :
+    `<div class="tarjeta"><strong>Informe de centralización</strong><ol style="margin:8px 0 0;padding-left:20px">` +
+    GLO.observaciones.map(o => `<li class="nota">${esc(o)}</li>`).join('') + '</ol></div>';
+  $('#gloContenido').innerHTML = lista.map(htmlCursoGlobal).join('') + (sel === '*' ? obs : '');
+  fijarCabecerasGlobal();
+}
+
+/** Arma el libro de Excel con el formato del centralizador de la unidad educativa (una hoja por curso). */
+async function construirExcelGlobal(G, E, conResultados){
+  const min = G.notaMinima;
+  const wb = new E.Workbook();
+  wb.creator = G.unidad || 'Registro escolar';
+  const thin = { style: 'thin', color: { argb: 'FF7F7F7F' } };
+  const BORDE = { top: thin, left: thin, bottom: thin, right: thin };
+  const relleno = argb => ({ type: 'pattern', pattern: 'solid', fgColor: { argb: argb } });
+  const AMARILLO = 'FFFFE699', NARANJA = 'FFF8CBAD', VERDE = 'FFC6E0B4', GRIS = 'FFF2F2F2';
+  const fuente = (sz, b, color) => ({ name: 'Arial', size: sz, bold: !!b, color: color ? { argb: color } : undefined });
+  const poner = (ws, r, c, valor, o) => {
+    const cel = ws.getCell(r, c); o = o || {};
+    cel.value = valor;
+    cel.font = o.font || fuente(9);
+    if(o.fill) cel.fill = o.fill;
+    cel.alignment = o.align || { horizontal: 'center', vertical: 'middle' };
+    if(o.borde !== false) cel.border = BORDE;
+    if(o.fmt) cel.numFmt = o.fmt;
+    return cel;
+  };
+  const formula = (f, resultado) => conResultados ? { formula: f, result: resultado === null || resultado === undefined ? '' : resultado } : { formula: f };
+  const nombresHoja = {};
+  const nombreHoja = base => {
+    let n = String(base).replace(/[\\\/?*\[\]:]/g, '').slice(0, 28) || 'Curso', k = 2, f = n;
+    while(nombresHoja[f.toLowerCase()]) f = n + '_' + k++;
+    nombresHoja[f.toLowerCase()] = true; return f;
+  };
+  const ROJO = { font: { color: { argb: 'FFC00000' }, bold: true }, fill: { type: 'pattern', pattern: 'solid', bgColor: { argb: 'FFFFC7CE' } } };
+
+  G.cursos.forEach(c => {
+    const ws = wb.addWorksheet(nombreHoja(c.curso + c.paralelo), { properties: { tabColor: { argb: 'FF14213D' } } });
+    const S = statsGlobal(c, min);
+    const nA = c.areas.length, n = c.filas.length;
+    const pc = 3 + 4 * nA;               // primera columna de promedios (P1)
+    const colPA = pc + 6, colRA = pc + 7;
+    const cN = pc + 9, cNom = pc + 10, cPA = pc + 11, cAux = pc + 12;
+    const ult = 7 + n;                   // última fila de estudiantes
+    const L = letraCol;
+
+    ws.getColumn(1).width = 4; ws.getColumn(2).width = 31;
+    for(let i = 0; i < nA; i++){ for(let k = 0; k < 4; k++) ws.getColumn(3 + 4 * i + k).width = k === 3 ? 5 : 4.3; }
+    for(let k = 0; k < 8; k++) ws.getColumn(pc + k).width = k % 2 === 0 ? 6.5 : 4;
+    ws.getColumn(pc + 8).width = 3; ws.getColumn(cN).width = 4; ws.getColumn(cNom).width = 31; ws.getColumn(cPA).width = 7;
+    ws.getColumn(cAux).hidden = true;
+
+    // Encabezado
+    const sinBorde = { borde: false, align: { horizontal: 'left', vertical: 'middle' } };
+    poner(ws, 2, 2, 'U. E.: ' + (G.unidad || ''), { ...sinBorde, font: fuente(10, true) });
+    poner(ws, 3, 2, 'CENTRALIZADOR ANUAL DE NOTAS', { ...sinBorde, font: fuente(11, true) });
+    poner(ws, 4, 2, 'DIR: ' + (G.director || ''), { ...sinBorde, font: fuente(8, true) });
+    poner(ws, 2, pc, 'NIVEL: ' + (G.nivel || ''), { ...sinBorde, font: fuente(8, true) });
+    poner(ws, 3, pc, 'SIE: ' + (G.sie || '') + (G.distrito ? '   DISTRITO: ' + G.distrito : ''), { ...sinBorde, font: fuente(8, true) });
+    poner(ws, 4, pc, 'GESTIÓN: ' + (G.gestion || '') + '   CURSO: ' + c.curso + c.paralelo, { ...sinBorde, font: fuente(8, true) });
+    ws.getRow(5).height = 36;
+    ws.getRow(6).height = 14; ws.getRow(7).height = 14;
+
+    poner(ws, 7, 1, 'N', { font: fuente(7) });
+    poner(ws, 7, 2, 'APELLIDOS Y NOMBRES', { font: fuente(7) });
+
+    // Áreas: docente, código y 1T 2T 3T PA
+    c.areas.forEach((a, i) => {
+      const s = 3 + 4 * i;
+      ws.mergeCells(5, s, 5, s + 3); ws.mergeCells(6, s, 6, s + 3);
+      poner(ws, 5, s, a.docente, { font: fuente(7), align: { horizontal: 'center', vertical: 'middle', wrapText: true } });
+      poner(ws, 6, s, a.cod, { font: fuente(9, true) });
+      for(let k = 0; k < 4; k++){
+        ws.getCell(5, s + k).border = BORDE; ws.getCell(6, s + k).border = BORDE;
+        poner(ws, 7, s + k, ['1T', '2T', '3T', 'PA'][k], { font: fuente(9, k === 3), fill: k === 3 ? relleno(AMARILLO) : undefined });
+      }
+    });
+    // Cabeceras de promedios
+    ['P1', 'R1', 'P2', 'R2', 'P3', 'R3', 'PA', 'RA'].forEach((t, k) => {
+      ws.mergeCells(5, pc + k, 7, pc + k);
+      poner(ws, 5, pc + k, t, { font: fuente(9, true), fill: relleno(k >= 6 ? VERDE : NARANJA) });
+      for(let r = 5; r <= 7; r++) ws.getCell(r, pc + k).border = BORDE;
+    });
+    // Mejores promedios
+    ws.mergeCells(6, cN, 6, cPA);
+    poner(ws, 6, cN, 'MEJORES PROMEDIOS', { font: fuente(7, true), borde: false });
+    poner(ws, 7, cN, 'N', { font: fuente(7) });
+    poner(ws, 7, cNom, 'APELLIDOS Y NOMBRE', { font: fuente(7) });
+    poner(ws, 7, cPA, 'P.A.', { font: fuente(7) });
+
+    // Estudiantes
+    S.filas.forEach((x, i) => {
+      const r = 8 + i;
+      poner(ws, r, 1, i + 1, { font: fuente(7), borde: false });
+      poner(ws, r, 2, x.f.nombre, { font: fuente(8), align: { horizontal: 'left', vertical: 'middle' } });
+      c.areas.forEach((a, j) => {
+        const s = 3 + 4 * j, nt = x.f.notas[a.cod] || {};
+        [nt.t1, nt.t2, nt.t3].forEach((v, k) => poner(ws, r, s + k, v === null || v === undefined ? null : v));
+        poner(ws, r, s + 3, formula(`IFERROR(ROUND(AVERAGE(${L(s)}${r}:${L(s + 2)}${r}),0),"")`, nt.anual), { fill: relleno(AMARILLO), font: fuente(9, true) });
+      });
+      const celdas = k => c.areas.map((a, j) => L(3 + 4 * j + k) + r);   // k: 0=1T 1=2T 2=3T 3=PA
+      for(let k = 0; k < 4; k++){
+        const lista = celdas(k).join(',');
+        const f1 = nA ? `IFERROR(AVERAGE(${lista}),"")` : '""';
+        const f2 = nA ? celdas(k).map(x2 => `COUNTIF(${x2},"<${min}")`).join('+') : '0';
+        poner(ws, r, pc + 2 * k, formula(f1, x.p[k]), { fmt: '0.0', fill: relleno(k === 3 ? VERDE : NARANJA) });
+        poner(ws, r, pc + 2 * k + 1, formula(f2, x.r[k]), { fmt: '0;-0;;@', fill: relleno(k === 3 ? VERDE : NARANJA) });
+      }
+      poner(ws, r, cAux, formula(`IFERROR(${L(colPA)}${r}+(${n}-ROW()+8)*0.00001,"")`, x.p[3] === null ? '' : x.p[3] + (n - i) * 0.00001), { borde: false });
+    });
+
+    // Mejores promedios (10)
+    const rango = col => `$${L(col)}$8:$${L(col)}$${ult}`;
+    for(let k = 1; k <= Math.min(10, n); k++){
+      const r = 7 + k, t = S.top[k - 1];
+      const idx = `MATCH(LARGE(${rango(cAux)},${L(cN)}${r}),${rango(cAux)},0)`;
+      poner(ws, r, cN, k, { font: fuente(7) });
+      poner(ws, r, cNom, formula(`IFERROR(INDEX(${rango(2)},${idx}),"")`, t ? t.x.f.nombre : ''), { font: fuente(7), align: { horizontal: 'left', vertical: 'middle' } });
+      poner(ws, r, cPA, formula(`IFERROR(INDEX(${rango(colPA)},${idx}),"")`, t ? t.x.p[3] : ''), { font: fuente(7), fmt: '0.0' });
+    }
+
+    // Pie: promedio y reprobados por columna
+    const rp = ult + 2, rr = ult + 3;
+    poner(ws, rp, 2, 'PROMEDIO', { font: fuente(8, true), align: { horizontal: 'right', vertical: 'middle' }, borde: false });
+    poner(ws, rr, 2, 'REPROBADOS', { font: fuente(8, true), align: { horizontal: 'right', vertical: 'middle' }, borde: false });
+    if(n){
+      c.areas.forEach((a, j) => {
+        for(let k = 0; k < 4; k++){
+          const col = 3 + 4 * j + k, rg = `${L(col)}8:${L(col)}${ult}`, p = S.pie[j][k];
+          poner(ws, rp, col, formula(`IFERROR(AVERAGE(${rg}),"")`, p.prom), { fmt: '0.0', font: fuente(8, true), fill: relleno(GRIS) });
+          poner(ws, rr, col, formula(`COUNTIF(${rg},"<${min}")`, p.rep), { fmt: '0;-0;;@', font: fuente(8, true), fill: relleno(GRIS) });
+        }
+      });
+      for(let k = 0; k < 4; k++){
+        const cp = pc + 2 * k, cr = cp + 1;
+        poner(ws, rp, cp, formula(`IFERROR(AVERAGE(${L(cp)}8:${L(cp)}${ult}),"")`, S.pieP[k]), { fmt: '0.0', font: fuente(8, true), fill: relleno(GRIS) });
+        poner(ws, rp, cr, formula(`SUM(${L(cr)}8:${L(cr)}${ult})`, S.pieR[k]), { fmt: '0;-0;;@', font: fuente(8, true), fill: relleno(GRIS) });
+      }
+    }
+
+    // Notas bajo el mínimo en rojo
+    if(nA && n){
+      ws.addConditionalFormatting({ ref: `C8:${L(pc - 1)}${ult}`, rules: [{ type: 'expression', formulae: [`AND(ISNUMBER(C8),C8<${min})`], style: ROJO }] });
+      [0, 1, 2, 3].forEach(k => {
+        const cp = L(pc + 2 * k), cr = L(pc + 2 * k + 1);
+        ws.addConditionalFormatting({ ref: `${cp}8:${cp}${ult}`, rules: [{ type: 'expression', formulae: [`AND(ISNUMBER(${cp}8),${cp}8<${min})`], style: ROJO }] });
+        ws.addConditionalFormatting({ ref: `${cr}8:${cr}${ult}`, rules: [{ type: 'expression', formulae: [`AND(ISNUMBER(${cr}8),${cr}8>0)`], style: ROJO }] });
+      });
+    }
+
+    ws.views = [{ state: 'frozen', xSplit: 2, ySplit: 7, showGridLines: false }];
+    ws.pageSetup = { orientation: 'landscape', paperSize: 5, fitToPage: true, fitToWidth: 1, fitToHeight: 0, printTitlesRow: '5:7',
+                     margins: { left: 0.3, right: 0.3, top: 0.4, bottom: 0.4, header: 0.2, footer: 0.2 } };
+  });
+
+  // Hoja DOCENTES: resumen por docente, curso y área
+  const wd = wb.addWorksheet('DOCENTES', { properties: { tabColor: { argb: 'FFF2C14E' } } });
+  const encab = ['DOCENTE', 'CURSO', 'ÁREA', '1T', '2T', '3T', 'PROM. ANUAL', 'CALIFICADOS', 'APROBADOS', 'REPROBADOS'];
+  const anchos = [34, 9, 36, 8, 8, 8, 12, 12, 12, 12];
+  encab.forEach((t, i) => {
+    wd.getColumn(i + 1).width = anchos[i];
+    poner(wd, 1, i + 1, t, { font: fuente(9, true, 'FFFFFFFF'), fill: relleno('FF14213D') });
+  });
+  const res = G.resumen.slice().sort((a, b) => a.docente.localeCompare(b.docente, 'es') ||
+    String(a.curso).localeCompare(String(b.curso), 'es', { numeric: true }) || String(a.paralelo).localeCompare(String(b.paralelo), 'es'));
+  res.forEach((r, i) => {
+    const fila = [r.docente, r.curso + r.paralelo, r.cod + ' · ' + r.nombre, r.p1, r.p2, r.p3, r.promedio, r.calificados, r.aprobados, r.reprobados];
+    fila.forEach((v, k) => poner(wd, i + 2, k + 1, v === null ? null : v, {
+      font: fuente(9), fmt: k >= 3 && k <= 6 ? '0.0' : undefined,
+      align: { horizontal: k === 0 || k === 2 ? 'left' : 'center', vertical: 'middle' },
+      fill: i % 2 ? relleno(GRIS) : undefined }));
+  });
+  wd.views = [{ state: 'frozen', ySplit: 1 }];
+  if(res.length) wd.autoFilter = { from: { row: 1, column: 1 }, to: { row: res.length + 1, column: encab.length } };
+
+  // Hoja OBS: informe de centralización
+  const wo = wb.addWorksheet('OBS', { properties: { tabColor: { argb: 'FFC00000' } } });
+  wo.getColumn(1).width = 5; wo.getColumn(2).width = 110;
+  const izq = { borde: false, align: { horizontal: 'left', vertical: 'middle' } };
+  poner(wo, 1, 1, 'U.E. ' + (G.unidad || ''), { ...izq, font: fuente(11, true) });
+  poner(wo, 2, 1, 'INFORME DE CENTRALIZACION', { ...izq, font: fuente(11, true) });
+  poner(wo, 3, 1, 'DIR: ' + (G.director || ''), { ...izq, font: fuente(9, true) });
+  poner(wo, 4, 1, 'NIVEL: ' + (G.nivel || ''), { ...izq, font: fuente(9, true) });
+  poner(wo, 6, 1, 'Nº', { font: fuente(9, true), fill: relleno(GRIS) });
+  poner(wo, 6, 2, 'OBSERVACIONES', { font: fuente(9, true), fill: relleno(GRIS) });
+  const obs = G.observaciones.length ? G.observaciones : ['Sin observaciones.'];
+  obs.forEach((o, i) => {
+    poner(wo, 7 + i, 1, G.observaciones.length ? i + 1 : '', { font: fuente(9) });
+    poner(wo, 7 + i, 2, o, { font: fuente(9), align: { horizontal: 'left', vertical: 'middle', wrapText: true } });
+  });
+  return wb;
+}
+
+$('#gloCurso').onchange = pintarGlobal;
+$('#btnGloActualizar').onclick = () => cargarGlobal(true);
+$('#btnGloImprimir').onclick = () => window.print();
+$('#btnGloExcel').onclick = async () => {
+  if(!GLO || !GLO.cursos.length) return aviso('No hay estudiantes para exportar.', true);
+  if(typeof ExcelJS === 'undefined') return aviso('No se pudo cargar el generador de Excel. Revisa tu conexión a internet y recarga la página.', true);
+  const b = $('#btnGloExcel'); b.disabled = true;
+  try {
+    const wb = await construirExcelGlobal(GLO, ExcelJS, true);
+    const buf = await wb.xlsx.writeBuffer();
+    descargarArchivo(new File([buf], ('CENTRALIZADOR_DE_NOTAS_' + GLO.gestion + '_' + String(GLO.unidad || '').toUpperCase()).replace(/[^\w.-]+/g, '_') + '.xlsx',
+      { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }));
+    aviso('Excel del Centralizador Global descargado');
+  } catch(e){ aviso('No se pudo generar el Excel: ' + e.message, true); }
+  b.disabled = false;
+};
+
+/* ---------- Exportar para la extensión «Importador de Calificaciones SIE» ----------
+   Genera el .xlsx que lee la extensión: una hoja por curso; fila con el código de cada área (LCO, MAT…) y,
+   debajo, las columnas 1T 2T 3T PA; con el RUDE de cada estudiante para que la búsqueda en el SIE sea exacta. */
+const normSie = s => String(s == null ? '' : s).normalize('NFD').replace(/[̀-ͯ]/g, '').toUpperCase().replace(/\s+/g, ' ').trim();
+
+function bytesXlsxSie(cursos){
+  if(typeof XLSX === 'undefined') throw new Error('No se pudo cargar el generador de Excel. Revisa tu conexión a internet y recarga la página.');
+  const wb = XLSX.utils.book_new(), usados = {};
+  cursos.forEach(c => {
+    const r0 = ['', '', ''], r1 = ['N°', 'APELLIDOS Y NOMBRES', 'CODIGO RUDE'];
+    c.areas.forEach(cod => { r0.push(cod, '', '', ''); r1.push('1T', '2T', '3T', 'PA'); });
+    const filas = c.filas.map((f, i) => {
+      const fila = [i + 1, f.nombre, f.rude ? String(f.rude) : ''];
+      c.areas.forEach(cod => { const n = f.notas[cod] || []; for(let k = 0; k < 4; k++) fila.push(n[k] === null || n[k] === undefined ? '' : n[k]); });
+      return fila;
+    });
+    const ws = XLSX.utils.aoa_to_sheet([['CENTRALIZADOR ' + c.nombre], [], r0, r1].concat(filas));
+    ws['!cols'] = [{ wch: 5 }, { wch: 38 }, { wch: 20 }].concat(c.areas.flatMap(() => [{ wch: 6 }, { wch: 6 }, { wch: 6 }, { wch: 6 }]));
+    const base = String(c.nombre).replace(/[\\\/?*\[\]:]/g, '').slice(0, 28) || 'Curso';
+    let n = base, k = 2; while(usados[n.toLowerCase()]) n = base + '_' + k++;
+    usados[n.toLowerCase()] = true;
+    XLSX.utils.book_append_sheet(wb, ws, n);
+  });
+  return XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+}
+function rudesDe(lista){ const m = {}; (lista || []).forEach(e => { if(e.rude) m[normSie(e.nombre)] = e.rude; }); return m; }
+function bajarSie(cursos, nombre){
+  descargarArchivo(new File([bytesXlsxSie(cursos)], nombre.replace(/[^\w.-]+/g, '_') + '.xlsx',
+    { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }));
+}
+function avisoSie(cursos){
+  const est = cursos.reduce((s, c) => s + c.filas.length, 0), sin = cursos.reduce((s, c) => s + c.filas.filter(f => !f.rude).length, 0);
+  aviso(`Planilla para el importador SIE: ${cursos.length} curso(s), ${est} estudiantes.` + (sin ? ` ${sin} sin RUDE: se buscarán por nombre.` : ''), false);
+}
+
+/* Boletín: el curso elegido arriba (para cualquier usuario; el docente ve sus áreas) */
+$('#btnSieCurso').onclick = conBoton('#btnSieCurso', async () => {
+  const b = await cargarTodas();
+  const ars = areasConDatos(b).map(a => a.cod), rudes = rudesDe(ESTS);
+  const c = { nombre: b.curso + b.paralelo, areas: ars, filas: b.filas.map(f => {
+    const notas = {};
+    ars.forEach(cod => { const x = f.areas.find(y => y.area === cod) || {}; notas[cod] = [x.t1, x.t2, x.t3, x.promedio]; });
+    return { nombre: f.nombre, rude: rudes[normSie(f.nombre)] || '', notas };
+  }) };
+  bajarSie([c], 'centralizador-SIE_' + b.curso + b.paralelo + '_' + b.gestion);
+  avisoSie([c]);
+});
+
+/* Centralizador Global (administrador): el curso elegido o todos */
+$('#btnGloSie').onclick = conBoton('#btnGloSie', async () => {
+  if(!GLO) await cargarGlobal(false);
+  if(!GLO || !GLO.cursos.length) return aviso('No hay estudiantes para exportar.', true);
+  const sel = $('#gloCurso').value;
+  const lista = GLO.cursos.filter((c, i) => sel === '*' || String(i) === sel);
+  const salida = [];
+  for(const c of lista){
+    aviso('Preparando ' + c.curso + '.º ' + c.paralelo + '…');
+    let rudes = {};
+    try { rudes = rudesDe(await api('apiEstudiantes', c.curso, c.paralelo)); } catch(e){}
+    const ars = c.areas.map(a => a.cod);
+    salida.push({ nombre: c.curso + c.paralelo, areas: ars, filas: c.filas.map(f => {
+      const notas = {};
+      ars.forEach(cod => { const x = f.notas[cod]; notas[cod] = x ? [x.t1, x.t2, x.t3, x.anual] : []; });
+      return { nombre: f.nombre, rude: rudes[normSie(f.nombre)] || '', notas };
+    }) });
+  }
+  bajarSie(salida, 'centralizador-SIE_' + GLO.gestion);
+  avisoSie(salida);
+});
+
+/* ---------- Curso ---------- */
+function pintarLista(){
+  $('#listaEst').innerHTML = ESTS.length
+    ? ESTS.map((e,i) => `<div class="fila-est"><span>${i+1}. ${esc(e.nombre)} <span class="nota">${esc(e.celular)}${e.rude ? ' · RUDE ' + esc(e.rude) : ''}</span></span>
+        <span class="ctl noprint">
+          <select data-sexo="${esc(e.id)}" aria-label="Sexo de ${esc(e.nombre)}" style="min-height:36px;padding:4px 6px">
+            <option value="">Sexo</option><option value="M"${e.sexo === 'M' ? ' selected' : ''}>M</option><option value="F"${e.sexo === 'F' ? ' selected' : ''}>F</option></select>
+          <label class="chk" style="padding:4px 8px"><input type="checkbox" data-ret="${esc(e.id)}" ${e.retirado ? 'checked' : ''}> Retirado</label>` +
+        (esAdmin() ? `<button class="btn sec" data-quitar="${e.id}" aria-label="Quitar ${esc(e.nombre)}">Quitar</button>` : '') +
+        '</span></div>').join('')
+    : '<div class="vacio">Todavía no hay estudiantes en este curso.</div>';
+}
+$('#listaEst').addEventListener('change', e => {
+  const t = e.target, id = t.dataset.sexo || t.dataset.ret; if(!id) return;
+  const est = ESTS.find(x => String(x.id) === id); if(!est) return;
+  const sexo = t.dataset.sexo ? t.value : est.sexo, ret = t.dataset.ret ? t.checked : est.retirado;
+  seguro(async () => { await api('apiMarcarEstudiante', id, sexo, ret); est.sexo = sexo; est.retirado = ret; aviso('Guardado'); });
+});
+$('#listaEst').addEventListener('click', e => {
+  const id = e.target.dataset.quitar; if(!id) return;
+  if(!confirm('¿Quitar a este estudiante de la lista? Sus notas quedan en la hoja Notas.')) return;
+  seguro(async () => { await api('apiQuitarEstudiante', id); aviso('Estudiante quitado'); await cargarCurso(); });
+});
+$('#btnAgregar').onclick = () => seguro(async () => {
+  const k = curso();
+  const c = $('#nuevoCurso').value.trim() || (k && k.c), p = $('#nuevoPar').value.trim() || (k && k.p);
+  const r = await api('apiAgregarEstudiantes', c, p, $('#txtEst').value);
+  aviso('Agregados: ' + r.agregados + (r.actualizados ? ' · RUDE actualizados: ' + r.actualizados : ''));
+  $('#txtEst').value = '';
+  const actual = c + '|' + p.toUpperCase();
+  INI = await api('apiInicio');
+  $('#selCurso').innerHTML = INI.cursos.map(x => `<option value="${esc(x.curso)}|${esc(x.paralelo)}">${esc(x.curso)}.º ${esc(x.paralelo)}</option>`).join('');
+  $('#selCurso').value = actual;
+  await cargarCurso();
+});
+/* ---------- Añadir y ordenar estudiantes desde la lista ---------- */
+$('#btnNuevoEst').onclick = () => {
+  const f = $('#formNuevoEst'); f.hidden = !f.hidden;
+  if(!f.hidden) $('#neNombre').focus();
+};
+$('#btnNeCancelar').onclick = () => {
+  $('#formNuevoEst').hidden = true;
+  ['#neNombre', '#neCel', '#neRude'].forEach(s => $(s).value = '');
+};
+$('#btnNeGuardar').onclick = () => seguro(async () => {
+  const k = curso(); if(!k) return aviso('Elige un curso primero.', true);
+  const nom = $('#neNombre').value.replace(/[;\t\r\n]+/g, ' ').trim();
+  if(!nom) return aviso('Escribe los apellidos y nombres.', true);
+  const linea = nom + ';' + $('#neCel').value.trim() + ';' + $('#neRude').value.trim();
+  const b = $('#btnNeGuardar'); b.disabled = true;
+  try {
+    const r = await api('apiAgregarEstudiantes', k.c, k.p, linea);
+    aviso(r.agregados ? 'Estudiante añadido' : (r.actualizados ? 'Ya existía: se actualizó su RUDE' : 'Ese estudiante ya está en la lista'), !r.agregados && !r.actualizados);
+    if(r.agregados || r.actualizados){
+      ['#neNombre', '#neCel', '#neRude'].forEach(s => $(s).value = '');
+      await cargarCurso();
+      $('#neNombre').focus();
+    }
+  } finally { b.disabled = false; }
+});
+$('#btnOrdenarEst').onclick = () => seguro(async () => {
+  const k = curso(); if(!k) return aviso('Elige un curso primero.', true);
+  if(ESTS.length < 2) return aviso('No hay suficientes estudiantes para ordenar.', true);
+  const b = $('#btnOrdenarEst'); b.disabled = true;
+  try {
+    await api('apiOrdenarEstudiantes', k.c, k.p);
+    aviso('Lista ordenada por apellidos y nombres');
+
+    await cargarCurso();
+  } finally { b.disabled = false; }
+});
+$('#btnCentral').onclick = () => seguro(async () => {
+  const k = curso(); if(!k) return;
+  const r = await api('apiCentralizador', k.c, k.p);
+  $('#tCentral').innerHTML = '<thead><tr><th class="n">Estudiante</th>' + r.areas.map(a => `<th title="${esc(nomArea(a))}">${esc(a)}</th>`).join('') +
+    (r.muestraGeneral ? '<th>General</th>' : '') + '</tr></thead><tbody>' +
+    r.filas.map(f => `<tr><td class="n">${esc(f.nombre)}</td>` +
+      f.promedios.map(p => `<td class="${clase(p)}">${p ?? ''}</td>`).join('') +
+      (r.muestraGeneral ? `<td class="tot ${clase(f.general)}">${f.general ?? ''}</td>` : '') + '</tr>').join('') + '</tbody>';
+  $('#boxCentral').style.display = 'block';
+});
+$('#selCurso').onchange = cargarCurso;
+
+/* ---------- Mis cursos y áreas (maestros) ---------- */
+let MISEXTRA = [], MISSEL = {};
+function misClaves(){
+  const ks = new Set(MISEXTRA);
+  INI.todosCursos.forEach(x => ks.add(x.curso + '|' + x.paralelo));
+  Object.keys(INI.asign).forEach(k => ks.add(k));
+  Object.keys(MISSEL).forEach(k => ks.add(k));
+  return [...ks].sort((x, y) => x.localeCompare(y, 'es', { numeric: true }));
+}
+function misEtiquetas(){
+  const sel = $('#misCurso').value;
+  $('#misCurso').innerHTML = misClaves().map(k => {
+    const [c, p] = k.split('|'), n = (MISSEL[k] || []).length;
+    return `<option value="${esc(k)}">${esc(c)}.º ${esc(p)}${n ? ' · ✓ ' + n + (n === 1 ? ' área' : ' áreas') : ''}</option>`;
+  }).join('') || '<option value="">Añade tu curso abajo</option>';
+  if(sel && [...$('#misCurso').options].some(o => o.value === sel)) $('#misCurso').value = sel;
+  const ks = Object.keys(MISSEL).filter(k => MISSEL[k].length).sort((x, y) => x.localeCompare(y, 'es', { numeric: true }));
+  $('#misResumen').textContent = ks.length
+    ? 'Seleccionado: ' + ks.map(k => { const [c, p] = k.split('|'); return `${c}.º ${p}: ${MISSEL[k].join(', ')}`; }).join(' · ')
+    : 'Todavía no has marcado ninguna área.';
+}
+function misPintarAreas(){
+  const k = $('#misCurso').value, marc = MISSEL[k] || [];
+  $('#misAreas').innerHTML = k ? INI.areas.map(a =>
+    `<label class="chk"><input type="checkbox" value="${a.cod}" ${marc.indexOf(a.cod) >= 0 ? 'checked' : ''}> <span><strong>${a.cod}</strong> · ${esc(a.nombre)}</span></label>`).join('')
+    : '<div class="vacio">Añade un curso para elegir sus materias.</div>';
+}
+function pintarMis(conservar){
+  if(!INI) return;
+  if(!conservar){
+    MISSEL = {};
+    Object.keys(INI.asign).forEach(k => MISSEL[k] = INI.asign[k].slice());
+  }
+  misEtiquetas();
+  misPintarAreas();
+}
+$('#misCurso').onchange = misPintarAreas;
+$('#misAreas').addEventListener('change', () => {
+  const k = $('#misCurso').value; if(!k) return;
+  MISSEL[k] = [...document.querySelectorAll('#misAreas input:checked')].map(i => i.value);
+  misEtiquetas();
+});
+$('#btnMisAnadir').onclick = () => {
+  const c = $('#misNuevoCurso').value.trim(), p = $('#misNuevoPar').value.trim().toUpperCase();
+  if(!/^[0-9A-Za-z]{1,4}$/.test(c) || !/^[0-9A-Za-z]{1,4}$/.test(p)) return aviso('Escribe curso y paralelo (hasta 4 letras o números).', true);
+  const k = c + '|' + p;
+  if(MISEXTRA.indexOf(k) < 0) MISEXTRA.push(k);
+  if(!MISSEL[k]) MISSEL[k] = [];
+  $('#misNuevoCurso').value = $('#misNuevoPar').value = '';
+  misEtiquetas();
+  $('#misCurso').value = k;
+  misPintarAreas();
+  aviso('Curso añadido. Marca tus materias y pulsa «Guardar».');
+};
+$('#btnMisGuardar').onclick = () => seguro(async () => {
+  const items = Object.keys(MISSEL).map(k => { const [c, p] = k.split('|'); return { curso: c, paralelo: p, areas: MISSEL[k] }; });
+  const b = $('#btnMisGuardar'); b.disabled = true;
+  try {
+    await api('apiMisAsignaciones', items);
+    const actual = $('#selCurso').value;
+    INI = await api('apiInicio');
+    MISEXTRA = [];
+    $('#selCurso').innerHTML = INI.cursos.length
+      ? INI.cursos.map(x => `<option value="${esc(x.curso)}|${esc(x.paralelo)}">${esc(x.curso)}.º ${esc(x.paralelo)}</option>`).join('')
+      : '<option value="">Sin cursos</option>';
+    if(actual && INI.cursos.some(x => x.curso + '|' + x.paralelo === actual)) $('#selCurso').value = actual;
+    $('#sinCursos').hidden = INI.cursos.length > 0;
+    await cargarCurso();
+    pintarMis();
+    aviso('Cursos y áreas guardados');
+  } finally { b.disabled = false; }
+});
+
+/* ---------- Eliminar cursos ---------- */
+async function recargarCursos(){
+  INI = await api('apiInicio');
+  $('#selCurso').innerHTML = INI.cursos.length
+    ? INI.cursos.map(x => `<option value="${esc(x.curso)}|${esc(x.paralelo)}">${esc(x.curso)}.º ${esc(x.paralelo)}</option>`).join('')
+    : '<option value="">Sin cursos</option>';
+  $('#sinCursos').hidden = INI.cursos.length > 0 || esAdmin();
+  await cargarCurso();
+}
+
+/* Administrador: elimina el curso completo */
+$('#btnEliminarCurso').onclick = () => seguro(async () => {
+  const k = curso(); if(!k) return aviso('Elige un curso primero.', true);
+  const nombre = k.c + '.º ' + k.p;
+  if(!confirm(`¿Eliminar el curso ${nombre}? Se quitará de la lista de cursos y de las asignaciones de todos los docentes.`)) return;
+  const b = $('#btnEliminarCurso'); b.disabled = true;
+  try {
+    let r = await api('apiEliminarCurso', k.c, k.p, false);
+    if(!r.ok && r.conDatos){
+      const s = r.resumen;
+      const txt = prompt(`El curso ${nombre} tiene datos: ${s.estudiantes} estudiantes, ${s.notas} registros de notas, ${s.asistencias} de asistencia y ${s.kardex} del Kardex. Se borrarán de forma permanente.\n\nPara confirmar escribe ELIMINAR:`);
+      if(txt === null || txt.trim().toUpperCase() !== 'ELIMINAR') return aviso('No se eliminó el curso.');
+      r = await api('apiEliminarCurso', k.c, k.p, true);
+    }
+    aviso('Curso ' + nombre + ' eliminado');
+    await recargarCursos();
+  } finally { b.disabled = false; }
+});
+
+/* Docente: quita el curso de su propia lista (no borra estudiantes ni notas) */
+$('#btnMisQuitar').onclick = () => {
+  const k = $('#misCurso').value; if(!k) return aviso('Elige un curso.', true);
+  const [c, p] = k.split('|');
+  if(!confirm(`¿Quitar el curso ${c}.º ${p} de tu lista? Se quitan tus materias de ese curso cuando pulses «Guardar mis cursos y áreas». No se borra a los estudiantes ni sus notas.`)) return;
+  MISSEL[k] = [];
+  MISEXTRA = MISEXTRA.filter(x => x !== k);
+  misEtiquetas();
+  misPintarAreas();
+  aviso('Curso quitado de tu lista. Pulsa «Guardar mis cursos y áreas» para confirmar.');
+};
+
+/* ---------- Usuarios (administrador) ---------- */
+function resumenAsignaciones(u){
+  const ks = Object.keys(u.asignaciones).sort();
+  return ks.length ? ks.map(k => { const [c,p] = k.split('|'); return `${c}.º ${p}: ${u.asignaciones[k].join(', ')}`; }).join(' · ') : 'Sin áreas asignadas';
+}
+async function cargarUsuarios(){
+  const r = await seguro(() => api('apiUsuarios'));
+  if(!r) return;
+  USU = r; pintarUsuarios();
+  const sel = USEL && USU.find(x => x.usuario === USEL);
+  if(sel) mostrarUsuario(sel);
+}
+function pintarUsuarios(){
+  $('#tUsu').innerHTML = '<thead><tr><th class="n">Usuario</th><th>Nombre</th><th>Rol</th><th>Estado</th><th>Áreas</th><th></th></tr></thead><tbody>' +
+    USU.map(u => `<tr class="${u.usuario === USEL ? 'sel' : ''}"><td class="n">${esc(u.usuario)}</td><td>${esc(u.nombre)}</td>
+      <td>${u.rol === 'ADMIN' ? 'Admin' : 'Maestro'}</td><td>${u.activo ? 'Activo' : 'Inactivo'}</td>
+      <td style="white-space:normal;text-align:left;min-width:220px" class="nota">${u.rol === 'ADMIN' ? 'Todas' : esc(resumenAsignaciones(u))}</td>
+      <td><button class="mini" data-editar="${esc(u.usuario)}">Editar</button></td></tr>`).join('') + '</tbody>';
+}
+$('#tUsu').addEventListener('click', e => {
+  const b = e.target.closest('button'); if(!b || !b.dataset.editar) return;
+  const u = USU.find(x => x.usuario === b.dataset.editar); if(u){ mostrarUsuario(u); pintarUsuarios(); }
+});
+function nuevoUsuario(){
+  USEL = null;
+  $('#tituloUsuario').textContent = 'Nuevo usuario';
+  $('#uUsuario').value = $('#uNombre').value = $('#uClave').value = ''; $('#uUsuario').readOnly = false;
+  $('#uRol').value = 'MAESTRO'; $('#uActivo').checked = true; $('#uActivo').disabled = false;
+  $('#notaClave').textContent = 'Escribe una contraseña inicial. El maestro deberá cambiarla la primera vez que ingrese.';
+  $('#cardAsign').style.display = 'none';
+  pintarUsuarios();
+}
+function mostrarUsuario(u){
+  USEL = u.usuario;
+  $('#tituloUsuario').textContent = 'Editar usuario: ' + u.usuario;
+  $('#uUsuario').value = u.usuario; $('#uUsuario').readOnly = true;
+  $('#uNombre').value = u.nombre; $('#uRol').value = u.rol; $('#uActivo').checked = u.activo;
+  $('#uClave').value = '';
+  $('#notaClave').textContent = 'Deja la contraseña vacía para no cambiarla. Si escribes una nueva, el usuario deberá cambiarla al ingresar.';
+  const maestro = u.rol === 'MAESTRO';
+  $('#cardAsign').style.display = maestro ? '' : 'none';
+  if(!maestro) return;
+  $('#tituloAsign').textContent = 'Áreas que regenta ' + u.nombre;
+  const cursos = INI.cursos;
+  const previo = $('#asCurso').value;
+  $('#asCurso').innerHTML = cursos.length
+    ? cursos.map(x => `<option value="${esc(x.curso)}|${esc(x.paralelo)}">${esc(x.curso)}.º ${esc(x.paralelo)}</option>`).join('')
+    : '<option value="">Primero agrega estudiantes a un curso</option>';
+  if(previo && cursos.some(x => x.curso + '|' + x.paralelo === previo)) $('#asCurso').value = previo;
+  $('#asAreas').innerHTML = INI.areas.map(a => `<label class="chk"><input type="checkbox" value="${a.cod}"> <span><strong>${a.cod}</strong> · ${esc(a.nombre)}</span></label>`).join('');
+  marcarAreas(u);
+  $('#resumenAsign').textContent = 'Asignado ahora: ' + resumenAsignaciones(u);
+}
+function marcarAreas(u){
+  const sel = u.asignaciones[$('#asCurso').value] || [];
+  document.querySelectorAll('#asAreas input').forEach(i => i.checked = sel.indexOf(i.value) >= 0);
+}
+$('#asCurso').onchange = () => { const u = USU.find(x => x.usuario === USEL); if(u) marcarAreas(u); };
+$('#btnNuevoUsuario').onclick = nuevoUsuario;
+$('#btnGuardarUsuario').onclick = () => seguro(async () => {
+  const d = { usuario: $('#uUsuario').value, nombre: $('#uNombre').value, rol: $('#uRol').value,
+              activo: $('#uActivo').checked, clave: $('#uClave').value };
+  const r = await api('apiGuardarUsuario', d);
+  aviso(r.nuevo ? 'Usuario creado. Ahora asígnale sus áreas.' : 'Usuario actualizado');
+  USEL = d.usuario.trim().toLowerCase();
+  await cargarUsuarios();
+});
+$('#btnAsignar').onclick = () => seguro(async () => {
+  const k = $('#asCurso').value; if(!USEL || !k) return aviso('Elige un curso.', true);
+  const [c, p] = k.split('|');
+  const areas = [...document.querySelectorAll('#asAreas input:checked')].map(i => i.value);
+  await api('apiAsignar', USEL, c, p, areas);
+  aviso(areas.length ? 'Áreas guardadas: ' + areas.join(', ') : 'Se quitaron las áreas de ese curso');
+  await cargarUsuarios();
+});
+/* ---------- Historial de calificaciones (administrador) ---------- */
+let HIS = [];
+async function iniciarHistorial(){
+  iniciarRegHist();          //
+  $('#hCurso').innerHTML = '<option value="">Todos los cursos</option>' +
+    INI.cursos.map(x => `<option value="${esc(x.curso)}|${esc(x.paralelo)}">${esc(x.curso)}.º ${esc(x.paralelo)}</option>`).join('');
+  $('#hArea').innerHTML = '<option value="">Todas las áreas</option>' +
+    INI.areas.map(a => `<option value="${a.cod}">${a.cod} · ${esc(a.nombre)}</option>`).join('');
+  const us = (await seguro(() => api('apiUsuarios'))) || [];
+  $('#hDoc').innerHTML = '<option value="">Todos los docentes</option>' +
+    us.map(x => `<option value="${esc(x.usuario)}">${esc(x.nombre)}</option>`).join('');
+  await hCargarEst();
+  buscarHistorial();
+}
+async function hCargarEst(){
+  const v = $('#hCurso').value;
+  if(!v){ $('#hEst').innerHTML = '<option value="">Todos</option>'; return; }
+  const [c, p] = v.split('|');
+  const e = (await seguro(() => api('apiEstudiantes', c, p))) || [];
+  $('#hEst').innerHTML = '<option value="">Todos</option>' + e.map(x => `<option value="${esc(x.id)}">${esc(x.nombre)}</option>`).join('');
+}
+$('#hCurso').onchange = hCargarEst;
+async function buscarHistorial(){
+  const v = $('#hCurso').value, cp = v ? v.split('|') : ['', ''];
+  const r = await seguro(() => api('apiHistorialNotas', cp[0], cp[1], $('#hEst').value, $('#hArea').value, $('#hDoc').value));
+  if(!r) return;
+  HIS = r;
+  $('#hNota').textContent = r.length ? r.length + ' versiones, las más recientes primero (máximo 500). «Restaurar» devuelve las notas del estudiante a esa versión.' : '';
+  $('#tHis').innerHTML = r.length
+    ? '<thead><tr><th class="n">Estudiante</th><th>Fecha</th><th>Docente</th><th>Curso</th><th>Área</th><th>T</th><th>Ser</th><th>Saber</th><th>Hacer</th><th>Autoeval.</th><th>Extra</th><th>Total</th><th>Antes</th><th></th></tr></thead><tbody>' +
+      r.map(x => `<tr><td class="n">${esc(x.est)}</td><td>${esc(x.fecha)}</td><td>${esc(x.docente)}</td><td>${esc(x.curso)}</td><td>${esc(x.area)}</td><td>${x.trim}</td><td>${x.ser}</td><td>${x.saber}</td><td>${x.hacer}</td><td>${x.autoeval}</td><td>${x.extra}</td><td class="tot ${clase(x.total)}">${x.total}</td><td>${x.anterior}</td><td><button class="mini" data-rest="${x.fila}">Restaurar</button></td></tr>`).join('') + '</tbody>'
+    : '<tr><td class="vacio">No hay versiones guardadas con este filtro.</td></tr>';
+}
+$('#hBtn').onclick = buscarHistorial;
+$('#tHis').addEventListener('click', e => {
+  const b = e.target.closest('button'); if(!b || !b.dataset.rest) return;
+
+  const x = HIS.find(h => String(h.fila) === b.dataset.rest); if(!x) return;
+  if(!confirm(`¿Restaurar las notas de ${x.est} (${x.area}, trimestre ${x.trim}) a la versión del ${x.fecha}? Reemplaza las notas actuales; la versión actual sigue en el historial.`)) return;
+  seguro(async () => { await api('apiRestaurarNota', x.fila); aviso('Notas restauradas'); await buscarHistorial(); });
+});
+/* ---------- Historial: registro completo del docente ---------- */
+let HREG = null;
+function iniciarRegHist(){
+  const pc = $('#hrCurso').value, pa = $('#hrArea').value;
+  $('#hrCurso').innerHTML = INI.cursos.map(x => `<option value="${esc(x.curso)}|${esc(x.paralelo)}">${esc(x.curso)}.º ${esc(x.paralelo)}</option>`).join('');
+  $('#hrArea').innerHTML = '<option value="*">Todas las áreas</option>' +
+    INI.areas.map(a => `<option value="${a.cod}">${a.cod} · ${esc(a.nombre)}</option>`).join('');
+  if(pc && [...$('#hrCurso').options].some(o => o.value === pc)) $('#hrCurso').value = pc;
+  if(pa) $('#hrArea').value = pa;
+  if(!$('#hrResultado').innerHTML) $('#hrTrim').value = String(INI.trimActual);
+}
+
+function htmlRegistroDoc(D, R){
+  const cien = D.modo === 'CIEN', n = R.fechas.length;
+  const lit = t => (t === '' || t === null || t === undefined) ? '' : (t <= 50 ? 'ED' : t <= 68 ? 'DA' : t <= 84 ? 'DO' : 'DP');
+  let h1 = `<tr><th class="n" rowspan="2">N.º · Apellidos y nombres</th><th class="grupo" colspan="${n + 4}">CONTROL DE ASISTENCIA</th>`;
+  let h2 = '<tr>' + R.fechas.map(f => `<th class="vert"><span>${diaMes(f)}</span></th>`).join('') +
+    ['Asistencia', 'Faltas', 'Retraso', 'Licencia'].map(t => `<th class="vert"><span>${t}</span></th>`).join('');
+  DIMS.forEach(d => {
+    const m = R.criterios[d].length;
+    h1 += `<th class="grupo d-${d}" colspan="${m + 1}">${ETIQ[d]} (${D.max[d]}${cien ? ' · vale ' + D.pesos[d] : ''})</th>`;
+    h2 += R.criterios[d].map(nom => `<th class="vert d-${d}"><span>${esc(nom)}</span></th>`).join('') +
+          `<th class="vert d-${d}"><span>Promedio</span></th>`;
+  });
+  h1 += `<th class="grupo extra" rowspan="2">Extra</th><th class="grupo" rowspan="2">Nota trimestral</th><th class="grupo" rowspan="2">Cualit.</th></tr>`;
+  h2 += '</tr>';
+  const cuerpo = R.filas.map((f, i) => {
+    let t = `<td class="n">${i + 1}. ${esc(f.nombre)}</td>`;
+    t += f.estados.map(s => `<td class="ea ea-${s || 'v'}">${ESTADO_TXT[s] || ''}</td>`).join('');
+    t += `<td class="tot">${f.A}</td><td class="${f.F ? 'rep' : ''}">${f.F}</td><td>${f.R}</td><td>${f.L}</td>`;
+    DIMS.forEach(d => {
+      t += f.valores[d].map(v => `<td>${v === '' || v === null || v === undefined ? '' : v}</td>`).join('') +
+           `<td class="pd d-${d}">${f.proms[d] ?? ''}</td>`;
+    });
+    const tot = f.total === '' || f.total === null ? '' : Number(f.total);
+    t += `<td class="ex">${f.extra ?? ''}</td><td class="fin ${tot === '' ? '' : clase(tot)}">${tot}</td><td class="fin">${lit(tot)}</td>`;
+    return `<tr>${t}</tr>`;
+  }).join('');
+  const motivo = R.criterios.ExtraMotivo ? `<p class="nota">Motivo de la nota extracurricular: ${esc(R.criterios.ExtraMotivo)}</p>` : '';
+  return `<div class="tarjeta"><strong>${esc(R.cod)} · ${esc(R.nombre)}</strong>
+    <span class="nota"> · ${esc(R.curso)}.º ${esc(R.paralelo)} · ${R.trimestre}.º trimestre · Docente: ${esc(R.docente)}</span>${motivo}
+    <div class="tabla" style="margin-top:8px"><table class="reg"><thead>${h1}${h2}</thead><tbody>${cuerpo}</tbody></table></div></div>`;
+}
+
+async function obtenerRegHist(){
+  const v = $('#hrCurso').value; if(!v) throw new Error('Elige un curso.');
+  const cp = v.split('|');
+  HREG = await api('apiRegistrosDocentes', cp[0], cp[1], $('#hrArea').value, $('#hrTrim').value);
+  return HREG;
+}
+$('#hrVer').onclick = () => seguro(async () => {
+  const b = $('#hrVer'); b.disabled = true;
+  try {
+    const D = await obtenerRegHist();
+    $('#hrResultado').innerHTML = D.registros.length
+      ? `<p class="nota">${esc(D.unidad)} · Gestión ${esc(D.gestion)} · ${D.registros.length} registro(s) · A presente · F falta · R retraso · L licencia</p>` +
+        D.registros.map(R => htmlRegistroDoc(D, R)).join('')
+      : '<div class="tarjeta vacio">Ningún docente ha cargado notas con este filtro.</div>';
+  } finally { b.disabled = false; }
+});
+$('#hrExcel').onclick = () => seguro(async () => {
+  if(typeof ExcelJS === 'undefined') throw new Error('No se pudo cargar el generador de Excel. Recarga la página.');
+  const b = $('#hrExcel'); b.disabled = true;
+  try {
+    const D = HREG || await obtenerRegHist();
+    if(!D.registros.length) throw new Error('No hay notas registradas con ese filtro.');
+    const buf = await construirExcelRegistros(D, ExcelJS).xlsx.writeBuffer();
+    descargarArchivo(new File([buf], ('REGISTRO_' + D.gestion + '_' + $('#hrCurso').value.replace('|', '') + '.xlsx').replace(/[^\w.-]+/g, '_'), { type: XLSX_TIPO }));
+    aviso('Excel generado');
+  } finally { b.disabled = false; }
+});
+['#hrCurso', '#hrArea', '#hrTrim'].forEach(s => $(s).addEventListener('change', () => { HREG = null; }));
+$('#hrReiniciar').onclick = () => seguro(async () => {
+  const v = $('#hrCurso').value; if(!v) return aviso('Elige un curso.', true);
+  const [c, p] = v.split('|'), area = $('#hrArea').value, trim = $('#hrTrim').value;
+  const conAsis = $('#hrConAsis').checked && area === '*';
+  const b = $('#hrReiniciar'); b.disabled = true;
+  try {
+    const r = await api('apiReiniciarRegistro', c, p, area, trim, conAsis, false);
+    const s = r.resumen;
+    if(!s.notas && !s.criterios && !s.asistencias) return aviso('No hay nada que reiniciar con este filtro.');
+    const alcance = `curso ${c}.º ${p} · ${area === '*' ? 'todas las áreas' : area} · ${trim === '*' ? 'los 3 trimestres' : trim + '.º trimestre'}`;
+    const txt = prompt(`Se borrarán de forma permanente (${alcance}):\n• ${s.notas} registros de notas\n• ${s.criterios} configuraciones de celdas` +
+      (conAsis ? `\n• ${s.asistencias} registros de asistencia` : '') +
+      `\n\nAntes se crea un respaldo en Drive. Para confirmar escribe REINICIAR:`);
+    if(txt === null || txt.trim().toUpperCase() !== 'REINICIAR') return aviso('No se reinició nada.');
+    await api('apiReiniciarRegistro', c, p, area, trim, conAsis, true);
+    HREG = null;
+    $('#hrResultado').innerHTML = '';
+    aviso('Registro reiniciado. Respaldo creado en Drive.');
+  } finally { b.disabled = false; }
+});
+/* ---------- Respaldos (administrador) ---------- */
+async function cargarRespaldos(){
+  const r = await seguro(() => api('apiRespaldos'));
+  if(!r) return;
+  $('#tResp').innerHTML = r.length
+    ? '<thead><tr><th class="n">Respaldo</th><th>Fecha</th><th></th></tr></thead><tbody>' +
+      r.map(x => `<tr><td class="n">${esc(x.nombre)}</td><td>${esc(x.fecha)}</td><td><a href="${esc(x.descarga)}" target="_blank" rel="noopener">Descargar Excel</a></td></tr>`).join('') + '</tbody>'
+    : '<tr><td class="vacio">Todavía no hay respaldos. Pulsa «Crear respaldo ahora».</td></tr>';
+}
+$('#rCrear').onclick = () => seguro(async () => {
+  const b = $('#rCrear'); b.disabled = true;
+  try { const r = await api('apiCrearRespaldo'); aviso('Respaldo creado: ' + r.nombre); await cargarRespaldos(); }
+  finally { b.disabled = false; }
+});
+$('#rProbar').onclick = () => seguro(async () => {
+  const b = $('#rProbar'); b.disabled = true;
+  try {
+    const r = await api('apiProbarRespaldo'), box = $('#rResultado');
+    box.hidden = false;
+    box.innerHTML = `<strong class="${r.ok ? 'apr' : 'rep'}">${r.ok ? '✔ Respaldo correcto' : '✖ Se encontraron problemas'}</strong>
+      <p class="nota">${esc(r.archivo)} · hace ${r.horas} horas</p>` +
+      (r.problemas.length ? '<ul>' + r.problemas.map(p => `<li class="rep">${esc(p)}</li>`).join('') + '</ul>' : '') +
+      '<div class="tabla"><table><thead><tr><th class="n">Hoja</th><th>Filas ahora</th><th>Filas en el respaldo</th></tr></thead><tbody>' +
+      r.hojas.map(h => `<tr><td class="n">${esc(h.hoja)}</td><td>${h.actual}</td><td>${h.respaldo}</td></tr>`).join('') + '</tbody></table></div>';
+  } finally { b.disabled = false; }
+});
+
+/* ---------- Registros de los docentes (administrador) ---------- */
+function iniciarRegistros(){
+  iniciarCentSie();
+  const prev = $('#rgCurso').value;
+  $('#rgCurso').innerHTML = '<option value="*">Todos los cursos</option>' +
+    INI.cursos.map(x => `<option value="${esc(x.curso)}|${esc(x.paralelo)}">${esc(x.curso)}.º ${esc(x.paralelo)}</option>`).join('');
+  if(prev && [...$('#rgCurso').options].some(o => o.value === prev)) $('#rgCurso').value = prev;
+  const pa = $('#rgArea').value;
+  $('#rgArea').innerHTML = '<option value="*">Todas las áreas</option>' +
+    INI.areas.map(a => `<option value="${a.cod}">${a.cod} · ${esc(a.nombre)}</option>`).join('');
+  if(pa) $('#rgArea').value = pa;
+}
+
+function construirExcelRegistros(D, E){
+  const wb = new E.Workbook();
+  wb.creator = D.unidad || 'Registro escolar';
+  const thin = { style: 'thin', color: { argb: 'FF404040' } };
+  const BORDE = { top: thin, left: thin, bottom: thin, right: thin };
+  const fill = a => ({ type: 'pattern', pattern: 'solid', fgColor: { argb: a } });
+  const F = (sz, b) => ({ name: 'Arial', size: sz, bold: !!b });
+  const L = letraCol;
+  const cien = D.modo === 'CIEN', min = D.minima;
+  const COL = { Ser: 'FFA9D08E', Saber: 'FFBDD7EE', Hacer: 'FFFFD966', Autoeval: 'FFD9D9D9' };
+  const COLE = { P: 'FFE2EFDA', F: 'FFF8CBAD', R: 'FFFFE699', L: 'FFBDD7EE' };
+  const LET = { P: 'A', F: 'F', R: 'R', L: 'L' };
+  const ROJO = { font: { color: { argb: 'FFC00000' }, bold: true }, fill: { type: 'pattern', pattern: 'solid', bgColor: { argb: 'FFFFC7CE' } } };
+  const nn = v => (v === '' || v === null || v === undefined) ? null : Number(v);
+  const izq = { horizontal: 'left', vertical: 'middle' };
+  const vert = { horizontal: 'center', vertical: 'middle', textRotation: 90, wrapText: true };
+  const poner = (ws, r, c, v, o) => {
+    const x = ws.getCell(r, c); o = o || {};
+    x.value = v;
+    x.font = o.font || F(9);
+    x.alignment = o.al || { horizontal: 'center', vertical: 'middle' };
+    if(o.fill) x.fill = o.fill;
+    if(o.borde !== false) x.border = BORDE;
+    if(o.fmt) x.numFmt = o.fmt;
+    return x;
+  };
+  const unir = (ws, r1, c1, r2, c2, v, o) => {
+    if(r1 !== r2 || c1 !== c2) ws.mergeCells(r1, c1, r2, c2);
+    poner(ws, r1, c1, v, o);
+    for(let r = r1; r <= r2; r++) for(let c = c1; c <= c2; c++) ws.getCell(r, c).border = BORDE;
+  };
+  const usados = {};
+  const nombreHoja = base => {
+    let n = String(base).replace(/[\\\/?*\[\]:]/g, '').slice(0, 28) || 'Hoja', f = n, k = 2;
+    while(usados[f.toLowerCase()]) f = n + '_' + k++;
+    usados[f.toLowerCase()] = true; return f;
+  };
+  const lit = t => t === null ? '' : (t <= 50 ? 'ED' : t <= 68 ? 'DA' : t <= 84 ? 'DO' : 'DP');
+
+  D.registros.forEach(R => {
+    const ws = wb.addWorksheet(nombreHoja(R.curso + R.paralelo + '-' + R.cod + '-T' + R.trimestre), { properties: { tabColor: { argb: 'FF14213D' } } });
+    const n = R.filas.length, nF = R.fechas.length;
+    let col = 3;
+    const cF = col; col += nF;
+    const cA = col; col += 4;
+    const dc = {};
+    DIMS.forEach(d => { const m = R.criterios[d].length; dc[d] = { ini: col, m: m, prom: col + m }; col += m + 1; });
+    const cExt = col++, cTot = col++, cCual = col++;
+    col++;                       // columna separadora
+    const cPrev = col;           // 1T 2T 3T PA ESTADO
+    const ult = 5 + n;
+
+    ws.getColumn(1).width = 4.5; ws.getColumn(2).width = 36;
+    for(let i = 0; i < nF; i++) ws.getColumn(cF + i).width = 3.4;
+    for(let i = 0; i < 4; i++) ws.getColumn(cA + i).width = 4.8;
+    DIMS.forEach(d => { for(let i = 0; i < dc[d].m; i++) ws.getColumn(dc[d].ini + i).width = 6.5; ws.getColumn(dc[d].prom).width = 9; });
+    ws.getColumn(cExt).width = 6; ws.getColumn(cTot).width = 9; ws.getColumn(cCual).width = 11;
+    ws.getColumn(cPrev - 1).width = 3;
+    [6, 6, 6, 7].forEach((w, i) => ws.getColumn(cPrev + i).width = w);
+    ws.getColumn(cPrev + 4).width = 13;
+
+    // Encabezado
+    poner(ws, 1, 2, 'U. E.: ' + (D.unidad || '') + '   ·   GESTIÓN: ' + (D.gestion || ''), { borde: false, al: izq, font: F(10, true) });
+        poner(ws, 2, 2, 'REGISTRO DE CALIFICACIONES · ÁREA: ' + R.cod + ' · ' + R.nombre + ' · CURSO: ' + R.curso + '.º ' + R.paralelo +
+      ' · ' + R.trimestre + '.º TRIMESTRE · DOCENTE: ' + R.docente, { borde: false, al: izq, font: F(10, true) });
+    if(R.criterios.ExtraMotivo) poner(ws, 3, 2, 'EXTRA: ' + R.criterios.ExtraMotivo, { borde: false, al: izq, font: F(9, true) });
+    ws.getRow(5).height = 78;
+
+    unir(ws, 4, 1, 5, 1, 'N°', { font: F(8, true) });
+    unir(ws, 4, 2, 5, 2, 'APELLIDOS Y NOMBRES', { font: F(9, true), fill: fill('FFD9D9D9') });
+
+    // Asistencia
+    unir(ws, 4, cF, 4, cA + 3, 'CONTROL DE ASISTENCIA', { font: F(9, true), fill: fill('FFB4C6E7') });
+    R.fechas.forEach((f, i) => poner(ws, 5, cF + i, f.slice(8) + '/' + f.slice(5, 7), { al: vert, font: F(8), fill: fill('FFD9E1F2') }));
+    ['ASISTENCIA', 'FALTAS', 'RETRASO', 'LICENCIA'].forEach((t, i) => poner(ws, 5, cA + i, t, { al: vert, font: F(8, true), fill: fill('FFB4C6E7') }));
+
+    // Dimensiones
+    DIMS.forEach(d => {
+      const x = dc[d];
+      const etq = ETIQ[d].toUpperCase() + ' (' + D.max[d] + (cien ? ' · vale ' + D.pesos[d] : '') + ')';
+      unir(ws, 4, x.ini, 4, x.prom, etq, { font: F(9, true), fill: fill(COL[d]) });
+      R.criterios[d].forEach((nom, i) => poner(ws, 5, x.ini + i, nom, { al: vert, font: F(8), fill: fill(COL[d]) }));
+      poner(ws, 5, x.prom, 'PROMEDIO', { al: vert, font: F(8, true), fill: fill(COL[d]) });
+    });
+    unir(ws, 4, cExt, 5, cExt, 'EXT (0-' + D.maxExtra + ')', { al: vert, font: F(8, true), fill: fill('FFFFF2CC') });
+    unir(ws, 4, cTot, 5, cTot, 'NOTA TRIMESTRAL', { al: vert, font: F(9, true), fill: fill('FFBFBFBF') });
+    unir(ws, 4, cCual, 5, cCual, 'CUALITATIVO', { al: vert, font: F(8, true), fill: fill('FFB7DEE8') });
+
+    // Vista preliminar
+    unir(ws, 4, cPrev, 4, cPrev + 4, 'VISTA PRELIMINAR (REFERENCIAL)', { font: F(8, true), fill: fill('FFD9D9D9') });
+    ['1T', '2T', '3T', 'P.A.', 'ESTADO'].forEach((t, i) => poner(ws, 5, cPrev + i, t, { font: F(9, true), fill: fill('FFD9D9D9'), al: { horizontal: 'center', vertical: 'middle' } }));
+
+    // Estudiantes
+    R.filas.forEach((f, i) => {
+      const r = 6 + i;
+      poner(ws, r, 1, i + 1, { font: F(8) });
+      poner(ws, r, 2, f.nombre, { al: izq, font: F(8) });
+      f.estados.forEach((s, j) => poner(ws, r, cF + j, s ? LET[s] : null, { font: F(8, !!s), fill: COLE[s] ? fill(COLE[s]) : undefined }));
+      const tot4 = [['P', f.A], ['F', f.F], ['R', f.R], ['L', f.L]];
+      tot4.forEach((p, k) => {
+        const v = nF ? { formula: `COUNTIF(${L(cF)}${r}:${L(cF + nF - 1)}${r},"${LET[p[0]]}")`, result: p[1] } : p[1];
+        poner(ws, r, cA + k, v, { font: F(9, true) });
+      });
+      DIMS.forEach(d => {
+        const x = dc[d];
+        f.valores[d].forEach((v, j) => poner(ws, r, x.ini + j, nn(v)));
+        const pv = nn(f.proms[d]);
+        poner(ws, r, x.prom, { formula: `IFERROR(AVERAGE(${L(x.ini)}${r}:${L(x.ini + x.m - 1)}${r}),"")`, result: pv === null ? '' : pv },
+          { font: F(9, true), fill: fill(COL[d]), fmt: '0.0' });
+      });
+      poner(ws, r, cExt, nn(f.extra), { fill: fill('FFFFF9E6') });
+      const refs = DIMS.map(d => L(dc[d].prom) + r);
+      const suma = cien ? refs.map((q, k) => `N(${q})*${D.pesos[DIMS[k]]}/100`).join('+') : refs.map(q => `N(${q})`).join('+');
+      const total = nn(f.total);
+      poner(ws, r, cTot, { formula: `IF(COUNT(${refs.join(',')})=0,"",MIN(100,ROUND(${suma}+N(${L(cExt)}${r}),0)))`, result: total === null ? '' : total },
+        { font: F(10, true), fill: fill('FFEDEDED') });
+      const tr = L(cTot) + r;
+      poner(ws, r, cCual, { formula: `IF(${tr}="","",IF(${tr}<=50,"ED",IF(${tr}<=68,"DA",IF(${tr}<=84,"DO","DP"))))`, result: lit(total) }, { font: F(9, true) });
+
+      // vista preliminar
+      const tv = [nn(f.t1), nn(f.t2), nn(f.t3)];
+      tv[R.trimestre - 1] = total;
+      for(let k = 0; k < 3; k++){
+        if(k === R.trimestre - 1) poner(ws, r, cPrev + k, { formula: `IF(${tr}="","",${tr})`, result: total === null ? '' : total }, { font: F(9) });
+        else poner(ws, r, cPrev + k, tv[k], { font: F(9) });
+      }
+      const completo = tv.every(v => v !== null);
+      const pa = completo ? Math.round((tv[0] + tv[1] + tv[2]) / 3) : '';
+      const rg = `${L(cPrev)}${r}:${L(cPrev + 2)}${r}`;
+      poner(ws, r, cPrev + 3, { formula: `IF(COUNT(${rg})=3,ROUND(AVERAGE(${rg}),0),"")`, result: pa }, { font: F(9, true) });
+      poner(ws, r, cPrev + 4, { formula: `IF(${L(cPrev + 3)}${r}="","",IF(${L(cPrev + 3)}${r}>=${min},"APROBADO","REPROBADO"))`,
+        result: pa === '' ? '' : (pa >= min ? 'APROBADO' : 'REPROBADO') }, { font: F(8, true) });
+    });
+
+    // Promedio del curso
+    if(n){
+      const rp = ult + 2;
+      poner(ws, rp, 2, 'PROMEDIO DEL CURSO', { al: { horizontal: 'right', vertical: 'middle' }, font: F(8, true), borde: false });
+      const cols = DIMS.map(d => dc[d].prom).concat([cTot]);
+      cols.forEach(c => poner(ws, rp, c, { formula: `IFERROR(AVERAGE(${L(c)}6:${L(c)}${ult}),"")`, result: '' }, { fmt: '0.0', font: F(8, true), fill: fill('FFF2F2F2') }));
+      const ref = L(cTot);
+      [ref, L(cPrev), L(cPrev + 1), L(cPrev + 2), L(cPrev + 3)].forEach(c =>
+        ws.addConditionalFormatting({ ref: `${c}6:${c}${ult}`, rules: [{ type: 'expression', formulae: [`AND(ISNUMBER(${c}6),${c}6<${min})`], style: ROJO }] }));
+    }
+
+    ws.views = [{ state: 'frozen', xSplit: 2, ySplit: 5, showGridLines: false }];
+    ws.pageSetup = { orientation: 'landscape', paperSize: 5, fitToPage: true, fitToWidth: 1, fitToHeight: 0, printTitlesRow: '4:5' };
+  });
+  return wb;
+}
+
+$('#btnRegExcel').onclick = () => seguro(async () => {
+  if(typeof ExcelJS === 'undefined') throw new Error('No se pudo cargar el generador de Excel. Revisa tu conexión y recarga la página.');
+  const b = $('#btnRegExcel'); b.disabled = true;
+  try {
+    const v = $('#rgCurso').value, cp = v === '*' ? ['*', ''] : v.split('|');
+    const D = await api('apiRegistrosDocentes', cp[0], cp[1], $('#rgArea').value, $('#rgTrim').value);
+    if(!D.registros.length) throw new Error('No hay notas registradas con ese filtro.');
+    const wb = construirExcelRegistros(D, ExcelJS);
+    const buf = await wb.xlsx.writeBuffer();
+    descargarArchivo(new File([buf], ('REGISTRO_CALIFICACIONES_' + D.gestion + '_' + (v === '*' ? 'TODOS' : cp[0] + cp[1]) + '.xlsx').replace(/[^\w.-]+/g, '_'),
+      { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }));
+    aviso('Excel generado: ' + D.registros.length + (D.registros.length === 1 ? ' hoja' : ' hojas'));
+  } finally { b.disabled = false; }
+});
+/* ---------- Registros: centralizador por curso con el formato de la planilla (importador SIE) ---------- */
+function iniciarCentSie(){
+  const prev = $('#csCurso').value;
+  $('#csCurso').innerHTML = '<option value="*">Todos los cursos (una hoja por curso)</option>' +
+    INI.cursos.map(x => `<option value="${esc(x.curso)}|${esc(x.paralelo)}">${esc(x.curso)}.º ${esc(x.paralelo)} (un archivo)</option>`).join('');
+  if(prev && [...$('#csCurso').options].some(o => o.value === prev)) $('#csCurso').value = prev;
+}
+
+/** Una hoja con la misma estructura de la planilla CENTRALIZADOR (A: total de áreas · C: nombres · D: RUDE · E: sexo ·
+    F…: cada área con 1T 2T 3T PA · luego P1 R1 P2 R2 P3 R3 PA RA · OBS · mejores promedios). */
+function hojaCentralizadorSie(wb, G, c, info){
+  const L = letraCol, min = G.notaMinima || 51;
+  const nA = c.areas.length, n = c.filas.length, ult = Math.max(67, 7 + n);
+  const pc = 6 + 4 * nA, cObs = pc + 8, cAux = pc + 9, cN = pc + 10, cNom = pc + 11, cPA = pc + 12;
+  const ws = wb.addWorksheet((c.curso + c.paralelo).replace(/[\\\/?*\[\]:]/g, '').slice(0, 31) || 'Curso', { properties: { tabColor: { argb: 'FF14213D' } } });
+  const thin = { style: 'thin', color: { argb: 'FF7F7F7F' } }, BORDE = { top: thin, left: thin, bottom: thin, right: thin };
+  const F = (sz, b) => ({ name: 'Arial', size: sz, bold: !!b });
+  const rel = argb => ({ type: 'pattern', pattern: 'solid', fgColor: { argb: argb } });
+  const AMA = 'FFFFE699', NAR = 'FFF8CBAD', VER = 'FFC6E0B4';
+  const izq = { horizontal: 'left', vertical: 'middle' }, cen = { horizontal: 'center', vertical: 'middle', wrapText: true };
+  const put = (r, col, v, o) => { o = o || {}; const x = ws.getCell(r, col); x.value = v; x.font = o.font || F(9); x.alignment = o.al || cen;
+    if(o.fill) x.fill = o.fill; if(o.borde !== false) x.border = BORDE; if(o.fmt) x.numFmt = o.fmt; return x; };
+  const unir = (r1, c1, r2, c2, v, o) => { ws.mergeCells(r1, c1, r2, c2); put(r1, c1, v, o);
+    for(let r = r1; r <= r2; r++) for(let k = c1; k <= c2; k++) if(!(o && o.borde === false)) ws.getCell(r, k).border = BORDE; };
+  const nn = v => (v === null || v === undefined || v === '') ? null : Number(v);
+  const sinB = { borde: false, al: izq };
+
+  // datos por estudiante
+  const col = k => 6 + 4 * k;                                  // 1T del área k
+  const filas = c.filas.map(f => {
+    const t = c.areas.map(a => { const x = f.notas[a.cod] || {}; return [nn(x.t1), nn(x.t2), nn(x.t3)]; });
+    const pa = t.map(v => { const p = v.filter(x => x !== null); return p.length ? Math.round(p.reduce((s, x) => s + x, 0) / p.length) : null; });
+    const sumas = [0, 1, 2, 3].map(q => { let s = 0; c.areas.forEach((a, k) => { const v = q < 3 ? t[k][q] : pa[k]; if(v !== null) s += v; }); return s; });
+    const rep = [0, 1, 2, 3].map(q => c.areas.reduce((s, a, k) => { const v = q < 3 ? t[k][q] : pa[k]; return s + (v !== null && v < min ? 1 : 0); }, 0));
+    return { f, t, pa, p: sumas.map(x => x === 0 ? '' : x / (nA || 1)), r: rep };
+  });
+
+  // columnas
+  [11.4, 2.4, 24.9, 16, 3.2].forEach((w, i) => ws.getColumn(i + 1).width = w);
+  for(let k = 0; k < nA; k++) [3.4, 3.4, 3.4, 4.2].forEach((w, q) => ws.getColumn(col(k) + q).width = w);
+  for(let q = 0; q < 8; q++) ws.getColumn(pc + q).width = q % 2 ? 3.2 : 4.4;
+  ws.getColumn(cObs).width = 22; ws.getColumn(cAux).hidden = true; ws.getColumn(cN).width = 4; ws.getColumn(cNom).width = 28; ws.getColumn(cPA).width = 6;
+  ws.getRow(1).height = 22; ws.getRow(5).height = 30;
+
+  // encabezado
+  put(1, 3, { formula: `COUNTA(C8:C${ult})`, result: n }, { font: F(7), borde: false });
+  put(2, 2, 'U. E.: ' + (G.unidad || ''), { ...sinB, font: F(10, true) });
+  put(3, 2, 'CENTRALIZADOR ANUAL DE NOTAS - ' + (G.gestion || ''), { ...sinB, font: F(11, true) });
+  put(4, 2, 'DIR: ' + (G.director || ''), { ...sinB, font: F(8, true) });
+  put(5, 3, 'CURSO: ' + c.curso + c.paralelo, { ...sinB, font: F(8, true) });
+  put(2, cObs, 'NIVEL: ' + (G.nivel || ''), { ...sinB, font: F(8, true) });
+  put(3, cObs, 'SIE: ' + (G.sie || ''), { ...sinB, font: F(8, true) });
+  unir(2, cN, 2, cPA, 'U. E.: ' + (G.unidad || ''), { borde: false, font: F(8, true) });
+  unir(3, cN, 3, cPA, 'GESTION: ' + (G.gestion || ''), { borde: false, font: F(8, true) });
+  put(4, cN, 'CURSO: ' + c.curso + c.paralelo, { ...sinB, font: F(8, true) });
+
+  put(7, 1, 'TOTAL AREAS', { font: F(8) }); put(7, 2, 'N', { font: F(6, true) });
+  put(7, 3, 'APELLIDOS Y NOMBRES', { font: F(7, true) }); put(7, 4, 'CODIGO RUDE', { font: F(7, true) });
+  put(8, 1, nA, { font: F(9, true), borde: false });
+
+  c.areas.forEach((a, k) => {
+    const s = col(k);
+    unir(5, s, 5, s + 3, a.docente || '', { font: F(7) });
+    unir(6, s, 6, s + 3, a.cod, { font: F(9, true) });
+    ['1T', '2T', '3T', 'PA'].forEach((t, q) => put(7, s + q, t, { fill: q === 3 ? rel(AMA) : undefined }));
+  });
+  ['P1', 'R1', 'P2', 'R2', 'P3', 'R3', 'PA', 'RA'].forEach((t, q) => unir(5, pc + q, 7, pc + q, t, { fill: rel(q >= 6 ? VER : NAR) }));
+  unir(5, cObs, 7, cObs, 'OBS', { font: F(8, true) });
+  unir(6, cN, 6, cPA, 'MEJORES PROMEDIOS', { font: F(8, true), borde: false });
+  put(7, cN, 'Nº', { font: F(6) }); put(7, cNom, 'APELLIDOS Y NOMBRE', { font: F(6) }); put(7, cPA, 'P.A.', { font: F(6) });
+  put(5, cNom, 'PROMEDIO GENERAL DEL CURSO:', { font: F(7, true), borde: false });
+
+  // estudiantes
+  const celdasK = (r, q) => c.areas.map((a, k) => L(col(k) + q) + r).join(',');
+  const paTot = [];
+  for(let r = 8; r <= ult; r++){
+    const d = filas[r - 8], tiene = !!d;
+    put(r, 2, { formula: r === 8 ? `IFERROR(IF(C8="","",1),"")` : `IFERROR(IF(C${r}="","",B${r - 1}+1),"")`, result: tiene ? r - 7 : '' }, { font: F(6), borde: false });
+    if(tiene){
+      const inf = info[normSie(d.f.nombre)] || {};
+      put(r, 3, d.f.nombre, { al: izq, font: F(6) });
+      put(r, 4, inf.rude ? String(inf.rude) : '', { al: izq, font: F(7), fmt: '@' });
+      put(r, 5, inf.sexo || '', { font: F(7), fmt: '@' });
+    } else { put(r, 3, null, { al: izq, font: F(6) }); put(r, 4, null, { fmt: '@' }); put(r, 5, null); }
+    c.areas.forEach((a, k) => {
+      const s = col(k);
+      for(let q = 0; q < 3; q++) put(r, s + q, tiene ? d.t[k][q] : null);
+      put(r, s + 3, { formula: `IFERROR(ROUND(AVERAGE(${L(s)}${r}:${L(s + 2)}${r}),0),"")`, result: tiene && d.pa[k] !== null ? d.pa[k] : '' }, { fill: rel(AMA), font: F(9, true) });
+    });
+    for(let q = 0; q < 4; q++){
+      const lista = celdasK(r, q);
+      const cp = pc + 2 * q;
+      put(r, cp, { formula: `IFERROR(IF(SUM(${lista})=0,"",SUM(${lista})/$A$8),"")`, result: tiene ? d.p[q] : '' }, { fmt: '0', fill: rel(q === 3 ? VER : NAR) });
+      put(r, cp + 1, { formula: c.areas.map((a, k) => `COUNTIF(${L(col(k) + q)}${r},"<${min}")`).join('+') || '0', result: tiene ? d.r[q] : 0 }, { fmt: '0;-0;;@', fill: rel(q === 3 ? VER : NAR) });
+    }
+    put(r, cObs, null, { font: F(5) });
+    paTot.push(tiene ? d.p[3] : '');
+    put(r, cAux, { formula: `IFERROR(${L(pc + 6)}${r}+(COUNTA($${L(pc + 6)}$8:$${L(pc + 6)}$${ult})-ROW()+8)*0.00001,"")`,
+      result: tiene && d.p[3] !== '' ? d.p[3] + ((ult - 7) - r + 8) * 0.00001 : '' }, { borde: false });
+  }
+
+  // mejores promedios (10)
+  const orden = filas.map((d, i) => ({ d, clave: d.p[3] === '' ? null : d.p[3] + ((ult - 7) - (8 + i) + 8) * 0.00001 }))
+    .filter(x => x.clave !== null).sort((a, b) => b.clave - a.clave);
+  const rg = k => `$${L(k)}$8:$${L(k)}$${ult}`;
+  for(let k = 1; k <= 10; k++){
+    const r = 7 + k, t = orden[k - 1], idx = `MATCH(LARGE(${rg(cAux)},${L(cN)}${r}),${rg(cAux)},0)`;
+    put(r, cN, k, { font: F(6) });
+    put(r, cNom, { formula: `IFERROR(INDEX($C$8:$C$${ult},${idx}),"")`, result: t ? t.d.f.nombre : '' }, { al: izq, font: F(6) });
+    put(r, cPA, { formula: `IFERROR(INDEX(${rg(pc + 6)},${idx}),"")`, result: t ? t.d.p[3] : '' }, { font: F(6), fmt: '0' });
+  }
+
+  // promedios del curso (fila 69 en la plantilla original: dos filas bajo el último estudiante)
+  const rp = ult + 2;
+  put(rp, 1, 'PROMEDIO', { font: F(8, true), al: { horizontal: 'center', vertical: 'middle' }, borde: false });   // en la columna A: la columna C solo lleva nombres
+  const medias = {};
+  c.areas.forEach((a, k) => { for(let q = 0; q < 4; q++){
+    const s = col(k) + q, vals = filas.map(d => q < 3 ? d.t[k][q] : d.pa[k]).filter(v => v !== null);
+    const m = vals.length ? vals.reduce((x, y) => x + y, 0) / vals.length : '';
+    put(rp, s, { formula: `IFERROR(AVERAGE(${L(s)}8:${L(s)}${ult}),"")`, result: m }, { fmt: '0.0', font: F(8, true), fill: rel('FFF2F2F2') });
+  } });
+  [0, 2, 4, 6].forEach(cp => {
+    const vals = filas.map(d => d.p[cp / 2]).filter(v => v !== '');
+    const m = vals.length ? vals.reduce((x, y) => x + y, 0) / vals.length : '';
+    put(rp, pc + cp, { formula: `IFERROR(AVERAGE(${L(pc + cp)}8:${L(pc + cp)}${ult}),"")`, result: m }, { fmt: '0.0', font: F(8, true), fill: rel('FFF2F2F2') });
+    if(cp === 0) medias.p1 = m;
+  });
+  put(5, cPA, { formula: `IFERROR($${L(pc)}$${rp},"")`, result: medias.p1 === undefined ? '' : medias.p1 }, { font: F(8, true), fmt: '0.0' });
+
+  // notas bajo el mínimo en rojo
+  const ROJO = { font: { color: { argb: 'FFC00000' }, bold: true }, fill: { type: 'pattern', pattern: 'solid', bgColor: { argb: 'FFFFC7CE' } } };
+  if(nA){
+    ws.addConditionalFormatting({ ref: `F8:${L(pc - 1)}${ult}`, rules: [{ type: 'expression', formulae: [`AND(ISNUMBER(F8),F8<${min})`], style: ROJO }] });
+    [0, 2, 4, 6].forEach(q => { const cl = L(pc + q);
+      ws.addConditionalFormatting({ ref: `${cl}8:${cl}${ult}`, rules: [{ type: 'expression', formulae: [`AND(ISNUMBER(${cl}8),${cl}8<${min})`], style: ROJO }] }); });
+  }
+  ws.views = [{ state: 'frozen', xSplit: 5, ySplit: 7, showGridLines: false }];
+  ws.pageSetup = { orientation: 'landscape', paperSize: 5, fitToPage: true, fitToWidth: 1, fitToHeight: 0, printTitlesRow: '5:7' };
+  return ws;
+}
+
+$('#btnCentSie').onclick = () => seguro(async () => {
+  if(typeof ExcelJS === 'undefined') throw new Error('No se pudo cargar el generador de Excel. Revisa tu conexión y recarga la página.');
+  const b = $('#btnCentSie'); b.disabled = true;
+  try {
+    const G = await api('apiCentralizadorGlobal', true);                       // datos al día de todos los docentes
+    const sel = $('#csCurso').value;
+    const lista = G.cursos.filter(c => sel === '*' || (c.curso + '|' + c.paralelo) === sel);
+    if(!lista.length) throw new Error('Todavía no hay estudiantes ni calificaciones cargadas en ese curso.');
+    const wb = new ExcelJS.Workbook(); wb.creator = G.unidad || 'Registro escolar';
+    let sinRude = 0;
+    for(const c of lista){
+      aviso('Preparando ' + c.curso + '.º ' + c.paralelo + '…');
+      const info = {};
+      try { (await api('apiEstudiantes', c.curso, c.paralelo)).forEach(e => { info[normSie(e.nombre)] = { rude: e.rude, sexo: e.sexo }; }); } catch(e){}
+      hojaCentralizadorSie(wb, G, c, info);
+      sinRude += c.filas.filter(f => !(info[normSie(f.nombre)] || {}).rude).length;
+    }
+    const buf = await wb.xlsx.writeBuffer();
+    const nombre = sel === '*' ? 'CENTRALIZADOR_SIE_' + G.gestion : lista[0].curso + lista[0].paralelo + '_SEC_CENT';
+    descargarArchivo(new File([buf], nombre.replace(/[^\w.-]+/g, '_') + '.xlsx', { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }));
+    aviso('Centralizador descargado: ' + lista.length + (lista.length === 1 ? ' hoja' : ' hojas') + '.' + (sinRude ? ' ' + sinRude + ' estudiante(s) sin RUDE: se buscarán por nombre.' : ''), !!sinRude);
+  } finally { b.disabled = false; }
+});
+
+function enlazar(sel, fn){ const b = $(sel); if(b) b.onclick = fn; }
+/* ---------- Informes automáticos ---------- */
+const MESES_L = ['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+const fechaLarga = iso => { const p = String(iso).split('-'); return Number(p[2]) + ' de ' + MESES_L[Number(p[1]) - 1] + ' de ' + p[0]; };
+const COLORES = ['#4472C4','#ED7D31','#A5A5A5','#FFC000','#5B9BD5','#70AD47','#264478','#9E480E','#636363','#997300'];
+const IB = (() => { const t = { style: 'thin', color: { argb: 'FF000000' } }; return { top: t, left: t, bottom: t, right: t }; })();
+const EDIT = 'FFFFF9E6';
+
+function ip(ws, r, c, v, o){
+  o = o || {};
+  const x = ws.getCell(r, c);
+  x.value = v;
+  x.font = { name: 'Arial', size: o.sz || 9, bold: !!o.b };
+  x.alignment = o.al || { horizontal: 'center', vertical: 'middle', wrapText: true };
+  if(o.fill) x.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: o.fill } };
+  if(o.borde) x.border = IB;
+  if(o.fmt) x.numFmt = o.fmt;
+  return x;
+}
+function iunir(ws, r1, c1, r2, c2, v, o){
+  if(r1 !== r2 || c1 !== c2) ws.mergeCells(r1, c1, r2, c2);
+  ip(ws, r1, c1, v, o);
+  if(o && o.borde) for(let r = r1; r <= r2; r++) for(let c = c1; c <= c2; c++) ws.getCell(r, c).border = IB;
+}
+
+/** Encabezado oficial (escudos, unidad, DE/A/REF/FECHA). Devuelve la siguiente fila libre. */
+function cabeceraInforme(wb, ws, D, o){
+  const izq = { horizontal: 'left', vertical: 'middle' }, der = { horizontal: 'right', vertical: 'middle' };
+  const unidad = String(D.unidad || '').toUpperCase().replace(/^UNIDAD EDUCATIVA\s*/, '');
+  iunir(ws, 1, 3, 1, o.fin, 'UNIDAD EDUCATIVA', { b: true, sz: 11 });
+  iunir(ws, 2, 3, 2, o.fin, unidad, { b: true, sz: 11 });
+  iunir(ws, 4, 3, 4, o.fin, o.titulo, { b: true, sz: 10 });
+  iunir(ws, 5, 3, 5, o.fin, o.subtitulo, { b: true, sz: 10 });
+  for(let r = 1; r <= 5; r++) ws.getRow(r).height = 17;
+  const logo = (dato, col) => {
+    if(!dato) return;
+    const id = wb.addImage({ base64: dato, extension: dato.indexOf('image/png') >= 0 ? 'png' : 'jpeg' });
+    ws.addImage(id, { tl: { col: col, row: 0.1 }, ext: { width: 78, height: 78 } });
+  };
+  logo(D.logoIzq, 0.1); logo(D.logoDer, o.logoDer);
+  const fila = (r, et, txt, b) => {
+    if(et) iunir(ws, r, 1, r, 2, et, { al: der });
+    ip(ws, r, 3, txt, { al: izq, b: b });
+  };
+  fila(7, 'DE:', D.docente); fila(8, '', 'Maestro(a) del Área', true);
+  fila(9, 'A:', D.director || ''); fila(10, '', 'Director de la Unidad Educativa', true);
+  fila(11, 'REF:', o.ref, true); fila(12, 'FECHA:', fechaLarga(D.hoy));
+  for(let c = 1; c <= o.N; c++) ws.getCell(13, c).border = { bottom: { style: 'medium', color: { argb: 'FF000000' } } };
+  ip(ws, 14, 1, 'Señor(a) Director(a):', { al: izq });
+  ip(ws, 15, 1, o.texto, { al: izq });
+  return 17;
+}
+const ETQ_PER = ['ANUAL', 'PRIMER TRIMESTRE', 'SEGUNDO TRIMESTRE', 'TERCER TRIMESTRE'];
+function graficoInforme(D){
+  const ETQ_PER = ['ANUAL', 'PRIMER TRIMESTRE', 'SEGUNDO TRIMESTRE', 'TERCER TRIMESTRE'];
+  const W = 1400, H = 540, cv = document.createElement('canvas'); cv.width = W; cv.height = H;
+  const g = cv.getContext('2d');
+  g.fillStyle = '#fff'; g.fillRect(0, 0, W, H);
+  g.strokeStyle = '#BFBFBF'; g.lineWidth = 2; g.strokeRect(1, 1, W - 2, H - 2);
+  g.fillStyle = '#2F5597'; g.font = 'bold 34px Arial'; g.textAlign = 'center'; g.fillText(ETQ_PER[D.periodo || 0], W / 2, 52);
+  const x0 = 130, x1 = W - 330, y0 = 90, y1 = H - 70, ph = y1 - y0;
+  g.font = '24px Arial'; g.textAlign = 'right'; g.strokeStyle = '#D9D9D9'; g.lineWidth = 1;
+  for(let i = 0; i <= 10; i++){
+    const y = y1 - ph * i / 10;
+    g.fillStyle = '#595959'; g.beginPath(); g.moveTo(x0, y); g.lineTo(x1, y); g.stroke(); g.fillText(i * 10 + '%', x0 - 10, y + 8);
+  }
+  const n = Math.max(1, D.filas.length), gw = (x1 - x0) / 2, bw = Math.min(70, gw * 0.8 / n);
+  ['APROBADOS', 'REPROBADOS'].forEach((cat, ci) => {
+    const cx = x0 + gw * ci + gw / 2;
+    D.filas.forEach((f, i) => {
+      const v = f.efe.T ? (ci ? f.rep.T : f.apr.T) / f.efe.T : 0;
+      const bx = cx - bw * n / 2 + i * bw, bh = ph * v;
+      g.fillStyle = COLORES[i % COLORES.length]; g.fillRect(bx, y1 - bh, bw - 2, bh);
+      if(v > 0 && bw >= 34){ g.fillStyle = '#262626'; g.font = '20px Arial'; g.textAlign = 'center'; g.fillText(Math.round(v * 100) + '%', bx + bw / 2 - 1, y1 - bh - 6); }
+    });
+    g.fillStyle = '#595959'; g.font = '24px Arial'; g.textAlign = 'center'; g.fillText(cat, cx, y1 + 36);
+  });
+  g.strokeStyle = '#808080'; g.beginPath(); g.moveTo(x0, y1); g.lineTo(x1, y1); g.stroke();
+  const lh = Math.min(30, ph / n); g.textAlign = 'left'; g.font = Math.max(12, Math.min(24, lh - 4)) + 'px Arial';
+  D.filas.forEach((f, i) => {
+    const y = y0 + i * lh;
+    g.fillStyle = COLORES[i % COLORES.length]; g.fillRect(x1 + 30, y, 18, 18);
+    g.fillStyle = '#404040'; g.fillText(f.curso + ' ' + f.area, x1 + 58, y + 16);
+  });
+  return cv.toDataURL('image/png');
+}
+
+function pieInforme(ws, r, D, N){
+  ip(ws, r, 1, 'Es cuanto puedo informar para fines consiguientes.', { al: { horizontal: 'left', vertical: 'middle' } });
+  r += 4;
+  iunir(ws, r, 1, r, N, D.docente, { sz: 9 }); r++;
+  iunir(ws, r, 1, r, N, 'Maestra(o) del área', { sz: 9 });
+}
+
+async function excelInformeAnual(D){
+  const wb = new ExcelJS.Workbook(); wb.creator = D.unidad || 'Registro escolar';
+  const ws = wb.addWorksheet(D.periodo ? 'Informe T' + D.periodo : 'Informe anual', {
+    views: [{ showGridLines: false }],
+    pageSetup: { paperSize: 1, orientation: 'portrait', fitToPage: true, fitToWidth: 1, fitToHeight: 0,
+                 margins: { left: .4, right: .4, top: .4, bottom: .4, header: .2, footer: .2 } } });
+  const N = 13, izq = { horizontal: 'left', vertical: 'middle' }, B = { borde: true, b: true };
+  const per = ETQ_PER[D.periodo || 0];
+  [7, 8].concat(Array(11).fill(8)).forEach((w, i) => ws.getColumn(i + 1).width = w);
+    let r = cabeceraInforme(wb, ws, D, { N: N, fin: 11, logoDer: 11.3, titulo: 'INFORME', subtitulo: per,
+    ref: D.periodo ? 'INFORME ESTADISTICO DEL ' + per : 'INFORME ESTADISTICO FIN DE GESTION',
+    texto: 'En cumplimiento a instrucciones emanadas por su autoridad me permito elevar el presente informe.' });
+  const titulo = t => { ip(ws, r, 1, t, { al: izq, b: true }); r++; };
+  const grupo = (c, txt, subs) => {
+    iunir(ws, r, c, r, c + subs.length - 1, txt, B);
+    subs.forEach((s, i) => ip(ws, r + 1, c + i, s, B));
+  };
+
+  // 1) Temas
+  titulo('ESTADÍSTICA DE TEMAS AVANZADOS Y PROGRAMADOS - ' + per);
+  iunir(ws, r, 1, r + 1, 1, 'CURSO', B); iunir(ws, r, 2, r + 1, 2, 'ÁREA', B);
+  iunir(ws, r, 3, r, 8, 'TEMAS PLANIFICADOS', B);
+  iunir(ws, r + 1, 3, r + 1, 5, 'PROGRAMADO', B); iunir(ws, r + 1, 6, r + 1, 8, 'AVANZADOS', B);
+  iunir(ws, r, 9, r + 1, 10, 'PORCENTAJE DE AVANCE', B); iunir(ws, r, 11, r + 1, 13, 'OBSERVACIONES', B);
+  r += 2;
+  D.filas.forEach(f => {
+    ip(ws, r, 1, f.curso, { borde: true }); ip(ws, r, 2, f.area, { borde: true });
+    iunir(ws, r, 3, r, 5, null, { borde: true, fill: EDIT }); iunir(ws, r, 6, r, 8, null, { borde: true, fill: EDIT });
+    iunir(ws, r, 9, r, 10, { formula: `IFERROR(F${r}/C${r},0)`, result: 0 }, { borde: true, fmt: '0%' });
+    iunir(ws, r, 11, r, 13, null, { borde: true, fill: EDIT });
+    r++;
+  });
+  r++;
+
+  // 2) Inscritos y retirados
+  titulo('INSCRITOS Y RETIRADOS - ' + per);
+  iunir(ws, r, 1, r + 1, 1, 'CURSO', B); iunir(ws, r, 2, r + 1, 2, 'ÁREA', B);
+  grupo(3, 'INSCRITOS', ['M', 'F', 'T']); grupo(6, 'RETIRADOS', ['M', 'F', 'T']); grupo(9, 'EFECTIVOS', ['M', 'F', 'T']);
+  r += 2;
+  D.filas.forEach(f => {
+    [f.curso, f.area, f.ins.M, f.ins.F, f.ins.T, f.ret.M, f.ret.F, f.ret.T, f.efe.M, f.efe.F, f.efe.T]
+      .forEach((v, i) => ip(ws, r, i + 1, v, { borde: true }));
+    r++;
+  });
+  r++;
+
+  // 3) Aprobados y reprobados
+  titulo('PORCENTAJE DE APROBADOS Y REPROBADOS - ' + per);
+  iunir(ws, r, 1, r + 1, 1, 'CURSO', B); iunir(ws, r, 2, r + 1, 2, 'ÁREA', B);
+  grupo(3, 'EFECTIVOS', ['M', 'F', 'T']); grupo(6, 'APROBADOS', ['M', 'F', 'T', '%']); grupo(10, 'REPROBADOS', ['M', 'F', 'T', '%']);
+  r += 2;
+  D.filas.forEach(f => {
+    const pa = f.efe.T ? f.apr.T / f.efe.T : 0, pr = f.efe.T ? f.rep.T / f.efe.T : 0;
+    [f.curso, f.area, f.efe.M, f.efe.F, f.efe.T, f.apr.M, f.apr.F, f.apr.T].forEach((v, i) => ip(ws, r, i + 1, v, { borde: true }));
+    ip(ws, r, 9, { formula: `IFERROR(H${r}/E${r},0)`, result: pa }, { borde: true, fmt: '0%' });
+    [f.rep.M, f.rep.F, f.rep.T].forEach((v, i) => ip(ws, r, 10 + i, v, { borde: true }));
+    ip(ws, r, 13, { formula: `IFERROR(L${r}/E${r},0)`, result: pr }, { borde: true, fmt: '0%' });
+    r++;
+  });
+  r++;
+
+  // Gráfico
+  const img = wb.addImage({ base64: graficoInforme(D), extension: 'png' });
+  ws.addImage(img, { tl: { col: 0, row: r - 1 }, ext: { width: 700, height: 270 } });
+  r += 15;
+
+  // Logros y dificultades
+  ['LOGROS ALCANZADOS - ' + per, 'DIFICULTADES - ' + per].forEach(t => {
+    ip(ws, r, 1, t, { al: izq, b: true }); r++;
+    for(let k = 1; k <= 3; k++){
+      iunir(ws, r, 1, r, N, k + '.-', { al: izq, fill: EDIT });
+      for(let c = 1; c <= N; c++) ws.getCell(r, c).border = { bottom: { style: 'hair', color: { argb: 'FF7F7F7F' } } };
+      r++;
+    }
+    r++;
+  });
+  pieInforme(ws, r, D, N);
+  return wb;
+}
+
+const ORD_TRIM = ['', 'PRIMER', 'SEGUNDO', 'TERCER'];
+async function excelInformeDificultad(D){
+  const wb = new ExcelJS.Workbook(); wb.creator = D.unidad || 'Registro escolar';
+  const ws = wb.addWorksheet('Dificultades T' + D.trimestre, {
+    views: [{ showGridLines: false }],
+    pageSetup: { paperSize: 1, orientation: 'portrait', fitToPage: true, fitToWidth: 1, fitToHeight: 0,
+                 margins: { left: .4, right: .4, top: .4, bottom: .4, header: .2, footer: .2 } } });
+  const N = 6, B = { borde: true, b: true };
+  [5, 7, 8, 36, 46, 38].forEach((w, i) => ws.getColumn(i + 1).width = w);
+  let r = cabeceraInforme(wb, ws, D, { N: N, fin: 5, logoDer: 5.55, titulo: 'INFORME DE ESTUDIANTES CON DIFICULTAD',
+    subtitulo: ORD_TRIM[D.trimestre] + ' TRIMESTRE', ref: 'NOMINA DE ESTUDIANTES CON DIFICULTADES',
+    texto: 'En cumplimiento a instructivo emanado por su autoridad remito la nómina de los estudiantes con dificultad.' });
+  ['N°', 'Curso', 'Área', 'Apellidos y Nombres', 'Detalle', 'Adaptaciones curriculares / Observaciones']
+    .forEach((t, i) => ip(ws, r, i + 1, t, B));
+  ws.getRow(r).height = 30; r++;
+  const izq = { horizontal: 'left', vertical: 'middle', wrapText: true };
+  if(!D.filas.length){
+    for(let c = 1; c <= N; c++) ip(ws, r, c, null, { borde: true, fill: c === 6 ? EDIT : undefined });
+    ws.getRow(r).height = 22; r++;
+  }
+  D.filas.forEach((f, i) => {
+    ip(ws, r, 1, i + 1, { borde: true }); ip(ws, r, 2, f.curso, { borde: true }); ip(ws, r, 3, f.area, { borde: true });
+    ip(ws, r, 4, f.nombre, { borde: true, al: izq }); ip(ws, r, 5, f.detalle, { borde: true, al: izq });
+    ip(ws, r, 6, null, { borde: true, fill: EDIT });
+    ws.getRow(r).height = Math.max(22, Math.ceil(f.detalle.length / 48) * 13 + 6);
+    r++;
+  });
+  r += 1;
+  pieInforme(ws, r, D, N);
+  return wb;
+}
+
+const XLSX_TIPO = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+function alcanceInforme(){
+  const k = curso(), todos = $('#infAlcance').value === 'todos', area = $('#selArea').value;
+  if(typeof ExcelJS === 'undefined') throw new Error('No se pudo cargar el generador de Excel. Revisa tu conexión y recarga la página.');
+  if(!todos && (!k || !area)) throw new Error('Elige un curso y un área en la pestaña Notas.');
+  return { k: k, todos: todos, area: area };
+}
+
+enlazar('#btnInfAnual', conBoton('#btnInfAnual', async () => {
+  const a = alcanceInforme(), per = Number($('#infPeriodo').value) || 0;
+  const D = await api('apiInformeAnual', a.k ? a.k.c : '', a.k ? a.k.p : '', a.area, a.todos, per);
+  const wb = await excelInformeAnual(D);
+  const buf = await wb.xlsx.writeBuffer();
+  descargarArchivo(new File([buf], ('INFORME_' + (per ? 'T' + per : 'ANUAL') + '_' + (a.todos ? 'TODOS' : a.k.c + a.k.p + '_' + a.area) + '_' + D.gestion + '.xlsx').replace(/[^\w.-]+/g, '_'), { type: XLSX_TIPO }));
+  const sin = D.filas.reduce((s, f) => s + f.sinSexo, 0);
+  aviso(sin ? `Informe descargado. ${sin} estudiante(s) sin sexo marcado: cuentan en T pero no en M/F (márcalos en la pestaña Curso).` : 'Informe descargado', !!sin);
+}));
+
+enlazar('#btnInfDif', conBoton('#btnInfDif', async () => {
+  const a = alcanceInforme(), t = $('#selTrim').value;
+  const D = await api('apiInformeDificultad', a.k ? a.k.c : '', a.k ? a.k.p : '', a.area, t, a.todos);
+  const wb = await excelInformeDificultad(D);
+  const buf = await wb.xlsx.writeBuffer();
+  descargarArchivo(new File([buf], ('INFORME_DIFICULTAD_T' + t + '_' + (a.todos ? 'TODOS' : a.k.c + a.k.p + '_' + a.area) + '_' + D.gestion + '.xlsx').replace(/[^\w.-]+/g, '_'), { type: XLSX_TIPO }));
+  aviso(D.filas.length ? `Informe descargado: ${D.filas.length} estudiante(s) con nota bajo ${D.minima}` : `Nadie tiene nota bajo ${D.minima} en el ${t}.º trimestre; se descargó la nómina vacía.`, false);
+}));
+
+/* ---------- Cierre por inactividad ---------- */
+const INACTIVIDAD_MS = 30 * 60 * 1000;
+let ultimaActividad = Date.now(), avisoInact = false;
+['click', 'keydown', 'touchstart', 'input'].forEach(ev =>
+  document.addEventListener(ev, () => { ultimaActividad = Date.now(); avisoInact = false; }, { passive: true }));
+setInterval(() => {
+  if(!TOKEN) return;
+  const inactivo = Date.now() - ultimaActividad;
+  if(inactivo >= INACTIVIDAD_MS){
+    run('apiLogout', TOKEN).catch(() => {});
+    cerrarSesion('Sesión cerrada por inactividad. Ingresa de nuevo.');
+  } else if(inactivo >= INACTIVIDAD_MS - 120000 && !avisoInact){
+    avisoInact = true; aviso('Tu sesión se cerrará en 2 minutos por inactividad. Guarda tu trabajo.', true);
+  }
+}, 30000);
+setInterval(() => {   // mantiene viva la sesión mientras la persona sigue trabajando
+  if(TOKEN && Date.now() - ultimaActividad < INACTIVIDAD_MS - 300000) run('apiPing', TOKEN).catch(() => {});
+}, 240000);
+document.querySelectorAll('nav button').forEach(b => b.onclick = () => mostrar(b.dataset.t));
+try { nuevoUsuario(); } catch(e){ console.error(e); }
+window.addEventListener('error', ev => {
+  const l = document.querySelector('#lgMsg');
+  if(l && !l.textContent) l.textContent = 'Error: ' + ev.message;
+});
+arrancar();
+</script>
+</body>
+</html>
